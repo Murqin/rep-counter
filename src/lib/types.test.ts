@@ -1,5 +1,4 @@
 // src/lib/types.test.ts
-import { describe, it, expect } from 'vitest';
 import type { Preset, SessionState, Settings } from './types';
 
 describe('Types definition', () => {
@@ -12,5 +11,25 @@ describe('Types definition', () => {
       breakDuration: 30
     };
     expect(preset.name).toBe('Task Practice');
+  });
+
+  it('should allow creating a SessionState object', () => {
+    const sessionState: SessionState = {
+      activePresetId: '1',
+      currentRound: 1,
+      currentRep: 0,
+      isResting: false
+    };
+    expect(sessionState.activePresetId).toBe('1');
+    expect(sessionState.currentRound).toBe(1);
+    expect(sessionState.currentRep).toBe(0);
+    expect(sessionState.isResting).toBe(false);
+  });
+
+  it('should allow creating a Settings object', () => {
+    const settings: Settings = {
+      autoAdvance: true
+    };
+    expect(settings.autoAdvance).toBe(true);
   });
 });
