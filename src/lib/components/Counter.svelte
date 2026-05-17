@@ -8,7 +8,7 @@
 <div 
   class="flex flex-col items-center justify-center w-full h-full bg-black text-white cursor-pointer select-none"
   onclick={() => incrementRep(targetReps, $settingsStore.autoAdvance)}
-  onkeydown={(e) => e.key === 'Enter' && incrementRep(targetReps, $settingsStore.autoAdvance)}
+  onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && incrementRep(targetReps, $settingsStore.autoAdvance)}
   tabindex="0"
   role="button"
   data-testid="counter-area"
