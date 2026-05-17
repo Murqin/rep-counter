@@ -30,4 +30,18 @@ describe('Store Logic', () => {
     expect(get(sessionStore).currentRound).toBe(2);
     expect(get(sessionStore).isResting).toBe(true);
   });
+
+  it('manualAdvance advances to next round and starts resting', () => {
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 10, isResting: false });
+    manualAdvance();
+    expect(get(sessionStore).currentRep).toBe(0);
+    expect(get(sessionStore).currentRound).toBe(2);
+    expect(get(sessionStore).isResting).toBe(true);
+  });
+
+  it('endRest sets isResting to false', () => {
+    sessionStore.set({ activePresetId: '1', currentRound: 2, currentRep: 0, isResting: true });
+    endRest();
+    expect(get(sessionStore).isResting).toBe(false);
+  });
 });
