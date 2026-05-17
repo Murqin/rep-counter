@@ -1,12 +1,22 @@
 import { writable } from 'svelte/store';
 import type { SessionState, Preset, Settings } from './types';
 
-function persistentWritable<T>(key: string, initialValue: T) {
+export function persistentWritable<T>(key: string, initialValue: T) {
   let storedValue = null;
   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
     storedValue = localStorage.getItem(key);
   }
-  const store = writable<T>(storedValue ? JSON.parse(storedValue) : initialValue);
+  
+  let parsedValue = initialValue;
+  if (storedValue) {
+    try {
+      parsedValue = JSON.parse(storedValue);
+    } catch (e) {
+      console.warn(`Failed to parse localStorage key "${key}", falling back to initial value.`, e);
+    }
+  }
+
+  const store = writable<T>(parsedValue);
   
   store.subscribe(value => {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined' && typeof localStorage.setItem === 'function') {
@@ -31,6 +41,7 @@ export const presetsStore = persistentWritable<Preset[]>('rep-presets', []);
 
 export function incrementRep(targetReps: number, autoAdvance: boolean) {
   sessionStore.update(s => {
+    if (s.isResting) return s;
     let nextRep = s.currentRep + 1;
     let nextRound = s.currentRound;
     let isResting = s.isResting;
