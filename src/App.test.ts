@@ -16,7 +16,9 @@ describe('App Component Integration', () => {
       currentRound: 1,
       currentRep: 0,
       isResting: false,
-      totalRounds: 5
+      totalRounds: 5,
+      timeLeft: 0,
+      lastTick: null
     });
     presetsStore.set([]);
   });
@@ -66,7 +68,9 @@ describe('App Component Integration', () => {
       currentRound: 4, // More than 3
       currentRep: 0,
       isResting: false,
-      totalRounds: 3
+      totalRounds: 3,
+      timeLeft: 0,
+      lastTick: null
     });
 
     render(App);

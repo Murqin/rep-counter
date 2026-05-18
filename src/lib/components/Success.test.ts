@@ -32,7 +32,9 @@ describe('Success Component', () => {
       currentRound: 5,
       currentRep: 10,
       isResting: true,
-      totalRounds: 5
+      totalRounds: 5,
+      timeLeft: 0,
+      lastTick: null
     });
 
     const { getByText } = render(Success, { onMenu: () => {} });

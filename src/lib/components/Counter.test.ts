@@ -15,7 +15,7 @@ vi.mock('../store', () => ({
   manualAdvance: vi.fn(),
   sessionStore: {
     subscribe: (cb: any) => { 
-      cb({ currentRep: 5, currentRound: 2, isResting: false }); 
+      cb({ currentRep: 5, currentRound: 2, isResting: false, activePresetId: '1', totalRounds: 5, timeLeft: 0, lastTick: null }); 
       return () => {}; 
     }
   },
@@ -50,7 +50,7 @@ describe('Counter Component', () => {
     });
     const button = getByTestId('counter-area');
     await fireEvent.click(button);
-    expect(storeModule.incrementRep).toHaveBeenCalledWith(10, false);
+    expect(storeModule.incrementRep).toHaveBeenCalledWith(10, false, 30);
   });
 
   it('shows NEXT ROUND button when target is reached and autoAdvance is false', () => {
@@ -74,7 +74,7 @@ describe('Counter Component', () => {
     });
     const nextButton = getByText('NEXT ROUND');
     await fireEvent.click(nextButton);
-    expect(storeModule.manualAdvance).toHaveBeenCalled();
+    expect(storeModule.manualAdvance).toHaveBeenCalledWith(30);
   });
 
   it('opens QuickAdjust when round or target text is clicked', async () => {

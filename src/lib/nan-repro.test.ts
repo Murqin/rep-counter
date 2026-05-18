@@ -9,7 +9,9 @@ describe('NaN Reproduction', () => {
       currentRound: 1,
       currentRep: 0,
       isResting: false,
-      totalRounds: 3
+      totalRounds: 3,
+      timeLeft: 0,
+      lastTick: null
     });
   });
 

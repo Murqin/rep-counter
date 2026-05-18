@@ -17,7 +17,9 @@ describe('QuickAdjust Component', () => {
       currentRound: 1,
       currentRep: 0,
       isResting: false,
-      totalRounds: 5
+      totalRounds: 5,
+      timeLeft: 0,
+      lastTick: null
     });
   });
 
