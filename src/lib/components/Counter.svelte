@@ -52,7 +52,7 @@
     
     <button 
       type="button"
-      class="flex flex-col items-center justify-center p-4 -m-4 hover:bg-white/5 rounded-2xl transition-all cursor-pointer group/target relative z-10"
+      class="flex flex-col items-center justify-center p-4 -m-4 mt-4 hover:bg-white/5 rounded-2xl transition-all cursor-pointer group/target relative z-10"
       onclick={(e) => { e.stopPropagation(); showQuickAdjust = true; }}
     >
       <div class="relative flex items-center justify-center">
