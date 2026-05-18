@@ -1,8 +1,12 @@
 <!-- src/lib/components/Counter.svelte -->
 <script lang="ts">
   import { sessionStore, settingsStore, incrementRep, manualAdvance } from '../store';
+  import QuickAdjust from './QuickAdjust.svelte';
   
-  let { targetReps, onOpenSettings }: { targetReps: number, onOpenSettings: () => void } = $props();
+  let { targetReps: initialTargetReps, onOpenSettings }: { targetReps: number, onOpenSettings: () => void } = $props();
+
+  let targetReps = $state(initialTargetReps);
+  let showQuickAdjust = $state(false);
 </script>
 
 <div 
@@ -23,9 +27,19 @@
     onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && incrementRep(targetReps, $settingsStore.autoAdvance)}
     data-testid="counter-area"
   >
-    <div class="text-sm font-bold tracking-widest text-gray-500 uppercase mb-2">Round {$sessionStore.currentRound}</div>
+    <div 
+      class="text-sm font-bold tracking-widest text-gray-500 uppercase mb-2 hover:text-white transition-colors"
+      onclick={(e) => { e.stopPropagation(); showQuickAdjust = true; }}
+    >
+      Round {$sessionStore.currentRound}
+    </div>
     <div class="text-[10rem] leading-none font-light tabular-nums tracking-tighter">{$sessionStore.currentRep}</div>
-    <div class="text-xs font-bold text-gray-700 mt-4 tracking-widest">TARGET {targetReps}</div>
+    <div 
+      class="text-xs font-bold text-gray-700 mt-4 tracking-widest hover:text-white transition-colors"
+      onclick={(e) => { e.stopPropagation(); showQuickAdjust = true; }}
+    >
+      TARGET {targetReps}
+    </div>
   </button>
   
   {#if !$settingsStore.autoAdvance && $sessionStore.currentRep >= targetReps}
@@ -37,3 +51,11 @@
     </button>
   {/if}
 </div>
+
+{#if showQuickAdjust}
+  <QuickAdjust 
+    targetReps={targetReps}
+    onUpdateTarget={(val) => targetReps = val}
+    onclose={() => showQuickAdjust = false}
+  />
+{/if}

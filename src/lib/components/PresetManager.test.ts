@@ -29,6 +29,10 @@ describe('PresetManager Component', () => {
       } as unknown as Animation));
     }
 
+    if (!Element.prototype.scrollIntoView) {
+      Element.prototype.scrollIntoView = vi.fn();
+    }
+
     presetsStore.set([{ id: '1', name: 'Test', rounds: 3, repsPerRound: 5, breakDuration: 10 }]);
     sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false });
   });
@@ -43,12 +47,12 @@ describe('PresetManager Component', () => {
     const { getByLabelText, getByText } = render(PresetManager, { onclose: vi.fn() });
     
     const nameInput = getByLabelText('Name');
-    await fireEvent.input(nameInput, { target: { value: 'New Workout' } });
+    await fireEvent.input(nameInput, { target: { value: 'New Session' } });
     
     const createButton = getByText('Create Preset');
     await fireEvent.click(createButton);
     
-    expect(getByText('New Workout')).toBeTruthy();
+    expect(getByText('New Session')).toBeTruthy();
   });
 
   it('calls onclose when close button is clicked', async () => {
@@ -76,5 +80,51 @@ describe('PresetManager Component', () => {
     sessionStore.subscribe(s => currentSession = s)();
     expect(currentSession.activePresetId).toBe('2');
     expect(onclose).toHaveBeenCalled();
+  });
+
+  it('enters edit mode when edit button is clicked', async () => {
+    const { getByLabelText, getByDisplayValue } = render(PresetManager, { onclose: vi.fn() });
+    
+    const editButton = getByLabelText('Edit preset');
+    await fireEvent.click(editButton);
+    
+    expect(getByDisplayValue('Test')).toBeTruthy();
+    expect(getByDisplayValue('3')).toBeTruthy();
+    expect(getByDisplayValue('5')).toBeTruthy();
+    expect(getByDisplayValue('10')).toBeTruthy();
+  });
+
+  it('saves changes when editing a preset', async () => {
+    const { getByLabelText, getByText, getByDisplayValue } = render(PresetManager, { onclose: vi.fn() });
+    
+    const editButton = getByLabelText('Edit preset');
+    await fireEvent.click(editButton);
+    
+    const nameInput = getByLabelText('Name');
+    await fireEvent.input(nameInput, { target: { value: 'Updated Test' } });
+    
+    const saveButton = getByText('Save Changes');
+    await fireEvent.click(saveButton);
+    
+    expect(getByText('Updated Test')).toBeTruthy();
+    
+    let currentPresets: any;
+    presetsStore.subscribe(p => currentPresets = p)();
+    expect(currentPresets[0].name).toBe('Updated Test');
+  });
+
+  it('cancels editing when Cancel Edit button is clicked', async () => {
+    const { getByLabelText, getByText, queryByText, getByDisplayValue } = render(PresetManager, { onclose: vi.fn() });
+    
+    const editButton = getByLabelText('Edit preset');
+    await fireEvent.click(editButton);
+    
+    expect(getByText('Cancel Edit')).toBeTruthy();
+    
+    const cancelButton = getByText('Cancel Edit');
+    await fireEvent.click(cancelButton);
+    
+    expect(queryByText('Cancel Edit')).toBeNull();
+    expect(getByText('Create Preset')).toBeTruthy();
   });
 });

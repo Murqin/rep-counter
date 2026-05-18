@@ -9,18 +9,52 @@
   let newRounds = $state(5);
   let newReps = $state(10);
   let newBreak = $state(30);
+  let editingId = $state<string | null>(null);
 
-  function addPreset() {
-    if (!newName.trim()) return;
-    const newPreset: Preset = {
-      id: crypto.randomUUID(),
-      name: newName,
-      rounds: newRounds,
-      repsPerRound: newReps,
-      breakDuration: newBreak
-    };
-    presetsStore.update(p => [...p, newPreset]);
+  function resetForm() {
+    editingId = null;
     newName = '';
+    newRounds = 5;
+    newReps = 10;
+    newBreak = 30;
+  }
+
+  function savePreset() {
+    if (!newName.trim()) return;
+    
+    if (editingId) {
+      presetsStore.update(p => p.map(preset => 
+        preset.id === editingId 
+          ? { ...preset, name: newName, rounds: newRounds, repsPerRound: newReps, breakDuration: newBreak }
+          : preset
+      ));
+    } else {
+      const newPreset: Preset = {
+        id: crypto.randomUUID(),
+        name: newName,
+        rounds: newRounds,
+        repsPerRound: newReps,
+        breakDuration: newBreak
+      };
+      presetsStore.update(p => [...p, newPreset]);
+    }
+    
+    resetForm();
+  }
+
+  function editPreset(preset: Preset, e: MouseEvent) {
+    e.stopPropagation();
+    editingId = preset.id;
+    newName = preset.name;
+    newRounds = preset.rounds;
+    newReps = preset.repsPerRound;
+    newBreak = preset.breakDuration;
+    
+    // Scroll form into view if needed
+    const formElement = document.getElementById('preset-form');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   function selectPreset(id: string) {
@@ -78,10 +112,17 @@
               {preset.rounds} rounds • {preset.repsPerRound} reps • {preset.breakDuration}s break
             </div>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             {#if $sessionStore.activePresetId === preset.id}
-              <div class="w-2 h-2 rounded-full bg-white"></div>
+              <div class="w-2 h-2 rounded-full bg-white mr-2"></div>
             {/if}
+            <button 
+              onclick={(e) => editPreset(preset, e)}
+              class="opacity-0 group-hover:opacity-100 p-2 hover:text-white transition-all"
+              aria-label="Edit preset"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
             <button 
               onclick={(e) => deletePreset(preset.id, e)}
               class="opacity-0 group-hover:opacity-100 p-2 hover:text-red-400 transition-all"
@@ -94,9 +135,21 @@
       {/each}
     </div>
 
-    <!-- Add New Preset -->
-    <div class="pt-6 border-t border-white/5 space-y-4">
-      <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest">New Preset</h3>
+    <!-- Add/Edit Preset Form -->
+    <div id="preset-form" class="pt-6 border-t border-white/5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest">
+          {editingId ? 'Edit Preset' : 'New Preset'}
+        </h3>
+        {#if editingId}
+          <button 
+            onclick={resetForm}
+            class="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-white"
+          >
+            Cancel Edit
+          </button>
+        {/if}
+      </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="col-span-2 space-y-1.5">
           <label for="preset-name" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">Name</label>
@@ -137,11 +190,11 @@
         </div>
       </div>
       <button 
-        onclick={addPreset}
+        onclick={savePreset}
         disabled={!newName.trim()}
         class="w-full bg-white text-black font-medium py-3 rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:hover:bg-white transition-all mt-2"
       >
-        Create Preset
+        {editingId ? 'Save Changes' : 'Create Preset'}
       </button>
     </div>
   </div>

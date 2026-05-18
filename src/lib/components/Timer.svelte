@@ -3,7 +3,7 @@
   import { endRest } from '../store';
 
   let { duration }: { duration: number } = $props();
-  let timeLeft = $state(duration);
+  let timeLeft = $state(0);
   let interval: ReturnType<typeof setInterval>;
 
   $effect(() => {

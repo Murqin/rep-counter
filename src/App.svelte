@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import Counter from './lib/components/Counter.svelte';
   import Timer from './lib/components/Timer.svelte';
+  import Success from './lib/components/Success.svelte';
   import PresetManager from './lib/components/PresetManager.svelte';
   import { sessionStore, presetsStore } from './lib/store';
   import type { Preset } from './lib/types';
@@ -53,7 +54,9 @@
 </script>
 
 <main class="w-screen h-screen bg-black overflow-hidden font-sans select-none text-white">
-  {#if $sessionStore.isResting && activePreset.breakDuration > 0}
+  {#if $sessionStore.currentRound > activePreset.rounds}
+    <Success onMenu={() => isSettingsOpen = true} />
+  {:else if $sessionStore.isResting && activePreset.breakDuration > 0}
     <Timer duration={activePreset.breakDuration} />
   {:else}
     <Counter targetReps={activePreset.repsPerRound} onOpenSettings={() => isSettingsOpen = true} />

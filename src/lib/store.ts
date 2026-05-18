@@ -12,7 +12,7 @@ export function persistentWritable<T>(key: string, initialValue: T) {
     try {
       parsedValue = JSON.parse(storedValue);
     } catch (e) {
-      console.warn(`Failed to parse localStorage key "${key}", falling back to initial value.`, e);
+      // Failed to parse localStorage
     }
   }
 
@@ -30,7 +30,8 @@ export const sessionStore = persistentWritable<SessionState>('rep-session', {
   activePresetId: null,
   currentRound: 1,
   currentRep: 0,
-  isResting: false
+  isResting: false,
+  totalRounds: 0
 });
 
 export const settingsStore = persistentWritable<Settings>('rep-settings', {
@@ -44,12 +45,15 @@ export function incrementRep(targetReps: number, autoAdvance: boolean) {
     if (s.isResting) return s;
     let nextRep = s.currentRep + 1;
     let nextRound = s.currentRound;
-    let isResting: boolean = s.isResting;
+    let isResting = s.isResting;
 
     if (nextRep >= targetReps && autoAdvance) {
       nextRep = 0;
       nextRound++;
-      isResting = true;
+      // Only set resting if we haven't finished all rounds
+      if (nextRound <= s.totalRounds) {
+        isResting = true;
+      }
     }
     
     return { ...s, currentRep: nextRep, currentRound: nextRound, isResting };

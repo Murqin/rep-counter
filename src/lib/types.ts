@@ -12,6 +12,7 @@ export type SessionState = {
   currentRound: number;
   currentRep: number;
   isResting: boolean;
+  totalRounds: number;
 };
 
 export type Settings = {

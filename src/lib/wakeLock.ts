@@ -32,10 +32,9 @@ export async function requestWakeLock(): Promise<WakeLockSentinel | null> {
   if (typeof navigator !== 'undefined' && 'wakeLock' in navigator) {
     try {
       const wakeLock = await (navigator as unknown as NavigatorWithWakeLock).wakeLock.request('screen');
-      console.log('Wake Lock acquired');
       return wakeLock;
     } catch (err: any) {
-      console.warn(`Wake Lock request failed: ${err.name}, ${err.message}`);
+      // Failed to request wake lock
     }
   }
   return null;
