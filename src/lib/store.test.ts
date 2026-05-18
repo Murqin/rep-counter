@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { sessionStore, incrementRep, manualAdvance, endRest, persistentWritable } from './store';
+import { sessionStore, incrementRep, manualAdvance, endRest, completeSet, persistentWritable } from './store';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('persistentWritable', () => {
@@ -97,6 +97,24 @@ describe('Store Logic', () => {
     expect(get(sessionStore).currentRep).toBe(0);
     expect(get(sessionStore).currentRound).toBe(2);
     expect(get(sessionStore).isResting).toBe(true);
+  });
+
+  it('completeSet advances to next round and starts resting when autoAdvance is true', () => {
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false, totalRounds: 5 });
+    completeSet(10, true);
+    const state = get(sessionStore);
+    expect(state.currentRep).toBe(0);
+    expect(state.currentRound).toBe(2);
+    expect(state.isResting).toBe(true);
+  });
+
+  it('completeSet sets reps to target and does not advance round when autoAdvance is false', () => {
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false, totalRounds: 5 });
+    completeSet(10, false);
+    const state = get(sessionStore);
+    expect(state.currentRep).toBe(10);
+    expect(state.currentRound).toBe(1);
+    expect(state.isResting).toBe(false);
   });
 
   it('endRest sets isResting to false', () => {

@@ -72,3 +72,26 @@ export function manualAdvance() {
 export function endRest() {
   sessionStore.update(s => ({ ...s, isResting: false }));
 }
+
+export function completeSet(targetReps: number, autoAdvance: boolean) {
+  sessionStore.update(s => {
+    if (s.isResting) return s;
+    
+    let nextRound = s.currentRound;
+    let isResting = s.isResting;
+
+    if (autoAdvance) {
+      nextRound++;
+      if (nextRound <= s.totalRounds) {
+        isResting = true;
+      }
+    }
+    
+    return { 
+      ...s, 
+      currentRep: autoAdvance ? 0 : targetReps, 
+      currentRound: nextRound, 
+      isResting 
+    };
+  });
+}
