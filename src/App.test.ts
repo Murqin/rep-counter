@@ -15,7 +15,8 @@ describe('App Component Integration', () => {
       activePresetId: null,
       currentRound: 1,
       currentRep: 0,
-      isResting: false
+      isResting: false,
+      totalRounds: 5
     });
     presetsStore.set([]);
   });
@@ -64,7 +65,8 @@ describe('App Component Integration', () => {
       activePresetId: 'test-preset',
       currentRound: 4, // More than 3
       currentRep: 0,
-      isResting: false
+      isResting: false,
+      totalRounds: 3
     });
 
     render(App);

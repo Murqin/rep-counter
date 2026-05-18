@@ -34,7 +34,7 @@ describe('PresetManager Component', () => {
     }
 
     presetsStore.set([{ id: '1', name: 'Test', rounds: 3, repsPerRound: 5, breakDuration: 10 }]);
-    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false });
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false, totalRounds: 3 });
   });
 
   it('renders existing presets', () => {

@@ -1,12 +1,16 @@
 <!-- src/lib/components/Counter.svelte -->
 <script lang="ts">
-  import { sessionStore, settingsStore, incrementRep, manualAdvance } from '../store';
+  import { sessionStore, settingsStore, incrementRep, manualAdvance, completeSet } from '../store';
   import QuickAdjust from './QuickAdjust.svelte';
   
   let { targetReps: initialTargetReps, onOpenSettings }: { targetReps: number, onOpenSettings: () => void } = $props();
 
   let targetReps = $state(initialTargetReps);
   let showQuickAdjust = $state(false);
+
+  $effect(() => {
+    targetReps = initialTargetReps;
+  });
 </script>
 
 <div 
@@ -21,10 +25,12 @@
   </button>
 
   <!-- Circular Click Area -->
-  <button 
+  <div 
     class="flex flex-col items-center justify-center w-[85vw] h-[85vw] max-w-[400px] max-h-[400px] rounded-full border border-gray-800 bg-transparent active:bg-white/5 transition-all duration-75 cursor-pointer outline-none focus:border-gray-600"
     onclick={() => incrementRep(targetReps, $settingsStore.autoAdvance)}
     onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && incrementRep(targetReps, $settingsStore.autoAdvance)}
+    role="button"
+    tabindex="0"
     data-testid="counter-area"
   >
     <div 
@@ -40,7 +46,13 @@
     >
       TARGET {targetReps}
     </div>
-  </button>
+    <button 
+      class="mt-8 text-[10px] font-bold tracking-[0.2em] text-white/30 hover:text-white transition-all border border-white/10 px-6 py-2.5 rounded-full active:scale-95 z-10"
+      onclick={(e) => { e.stopPropagation(); completeSet(targetReps, $settingsStore.autoAdvance); }}
+    >
+      FINISH SET
+    </button>
+  </div>
   
   {#if !$settingsStore.autoAdvance && $sessionStore.currentRep >= targetReps}
     <button 
