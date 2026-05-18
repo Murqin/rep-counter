@@ -21,25 +21,25 @@
 >
   <div 
     transition:fly={{ y: 300, duration: 300 }}
-    class="w-full max-w-lg bg-[#0A0A0A] border-t border-white/10 rounded-t-3xl p-8 pb-12 space-y-10"
+    class="w-full max-w-lg bg-[var(--bg-color)] border-t border-[var(--text-color)]/10 rounded-t-3xl p-8 pb-12 space-y-10"
     onclick={(e) => e.stopPropagation()}
   >
-    <div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-2"></div>
+    <div class="w-12 h-1.5 bg-[var(--text-color)]/20 rounded-full mx-auto mb-2"></div>
     
     <div class="space-y-6">
       <div class="flex items-center justify-between">
         <div>
           <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Target Reps</div>
-          <div class="text-3xl font-light">{targetReps}</div>
+          <div class="text-3xl font-light text-[var(--text-color)]">{targetReps}</div>
         </div>
         <div class="flex gap-4">
           <button 
             onclick={() => onUpdateTarget(Math.max(1, Number(targetReps) - 1))}
-            class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
+            class="w-14 h-14 rounded-full border border-[var(--text-color)]/10 flex items-center justify-center text-2xl active:bg-[var(--text-color)]/5 text-[var(--text-color)]"
           >−</button>
           <button 
             onclick={() => onUpdateTarget(Number(targetReps) + 1)}
-            class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
+            class="w-14 h-14 rounded-full border border-[var(--text-color)]/10 flex items-center justify-center text-2xl active:bg-[var(--text-color)]/5 text-[var(--text-color)]"
           >+</button>
         </div>
       </div>
@@ -47,16 +47,16 @@
       <div class="flex items-center justify-between">
         <div>
           <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Break Time (s)</div>
-          <div class="text-3xl font-light">{restDuration}</div>
+          <div class="text-3xl font-light text-[var(--text-color)]">{restDuration}</div>
         </div>
         <div class="flex gap-4">
           <button 
             onclick={() => onUpdateRest(Math.max(5, Number(restDuration) - 5))}
-            class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
+            class="w-14 h-14 rounded-full border border-[var(--text-color)]/10 flex items-center justify-center text-2xl active:bg-[var(--text-color)]/5 text-[var(--text-color)]"
           >−</button>
           <button 
             onclick={() => onUpdateRest(Number(restDuration) + 5)}
-            class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
+            class="w-14 h-14 rounded-full border border-[var(--text-color)]/10 flex items-center justify-center text-2xl active:bg-[var(--text-color)]/5 text-[var(--text-color)]"
           >+</button>
         </div>
       </div>
@@ -64,16 +64,16 @@
       <div class="flex items-center justify-between">
         <div>
           <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Total Rounds</div>
-          <div class="text-3xl font-light">{$sessionStore.totalRounds}</div>
+          <div class="text-3xl font-light text-[var(--text-color)]">{$sessionStore.totalRounds}</div>
         </div>
         <div class="flex gap-4">
           <button 
             onclick={() => sessionStore.update(s => ({ ...s, totalRounds: Math.max(1, Number(s.totalRounds) - 1) }))}
-            class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
+            class="w-14 h-14 rounded-full border border-[var(--text-color)]/10 flex items-center justify-center text-2xl active:bg-[var(--text-color)]/5 text-[var(--text-color)]"
           >−</button>
           <button 
             onclick={() => sessionStore.update(s => ({ ...s, totalRounds: Number(s.totalRounds) + 1 }))}
-            class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
+            class="w-14 h-14 rounded-full border border-[var(--text-color)]/10 flex items-center justify-center text-2xl active:bg-[var(--text-color)]/5 text-[var(--text-color)]"
           >+</button>
         </div>
       </div>
@@ -81,7 +81,7 @@
 
     <button 
       onclick={onclose}
-      class="w-full bg-white text-black font-bold py-4 rounded-2xl"
+      class="w-full bg-[var(--text-color)] text-[var(--bg-color)] font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity"
     >
       DONE
     </button>
