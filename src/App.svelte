@@ -5,6 +5,7 @@
   import PresetManager from './lib/components/PresetManager.svelte';
   import { sessionStore, presetsStore } from './lib/store';
   import type { Preset } from './lib/types';
+  import { requestWakeLock, type WakeLockSentinel } from './lib/wakeLock';
 
   const defaultPreset: Preset = {
     id: 'default',
@@ -19,8 +20,32 @@
       presetsStore.set([defaultPreset]);
     }
     if (!$sessionStore.activePresetId) {
-      sessionStore.update(s => ({ ...s, activePresetId: defaultPreset.id }));
+      sessionStore.update(s => ({ 
+        ...s, 
+        activePresetId: defaultPreset.id,
+        totalRounds: defaultPreset.rounds
+      }));
     }
+
+    // Wake Lock Logic
+    let lock: WakeLockSentinel | null = null;
+    const acquireLock = async () => {
+      lock = await requestWakeLock();
+    };
+    
+    acquireLock();
+
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        acquireLock();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      if (lock) lock.release();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   });
 
   let activePreset = $derived($presetsStore.find(p => p.id === $sessionStore.activePresetId) || defaultPreset);
