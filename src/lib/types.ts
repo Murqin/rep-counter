@@ -17,4 +17,6 @@ export type SessionState = {
 
 export type Settings = {
   autoAdvance: boolean;
+  theme: 'dark' | 'light';
+  enableFeedback: boolean;
 };

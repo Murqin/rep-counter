@@ -66,9 +66,17 @@
 
   let currentTargetReps = $derived(overrideTargetReps ?? activePreset.repsPerRound);
   let currentBreakDuration = $derived(overrideBreakDuration ?? activePreset.breakDuration);
+
+  $effect(() => {
+    if ($settingsStore.theme === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  });
 </script>
 
-<main class="w-screen h-screen bg-black overflow-hidden font-sans select-none text-white">
+<main class="w-screen h-screen bg-[var(--bg-color)] overflow-hidden font-sans select-none text-[var(--text-color)]">
   {#if $sessionStore.currentRound > $sessionStore.totalRounds}
     <Success onMenu={() => isSettingsOpen = true} />
   {:else if $sessionStore.isResting && currentBreakDuration > 0}

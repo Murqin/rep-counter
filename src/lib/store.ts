@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import type { SessionState, Preset, Settings } from './types';
+import { feedbackRep, feedbackSuccess } from './feedback';
 
 export function persistentWritable<T>(key: string, initialValue: T) {
   let storedValue = null;
@@ -35,7 +36,9 @@ export const sessionStore = persistentWritable<SessionState>('rep-session', {
 });
 
 export const settingsStore = persistentWritable<Settings>('rep-settings', {
-  autoAdvance: true
+  autoAdvance: true,
+  theme: 'dark',
+  enableFeedback: true
 });
 
 export const presetsStore = persistentWritable<Preset[]>('rep-presets', []);
@@ -50,10 +53,13 @@ export function incrementRep(targetReps: number, autoAdvance: boolean) {
     if (nextRep >= targetReps && autoAdvance) {
       nextRep = 0;
       nextRound++;
+      feedbackSuccess();
       // Only set resting if we haven't finished all rounds
       if (nextRound <= s.totalRounds) {
         isResting = true;
       }
+    } else {
+      feedbackRep();
     }
     
     return { ...s, currentRep: nextRep, currentRound: nextRound, isResting };
@@ -61,6 +67,7 @@ export function incrementRep(targetReps: number, autoAdvance: boolean) {
 }
 
 export function manualAdvance() {
+  feedbackSuccess();
   sessionStore.update(s => ({
     ...s,
     currentRep: 0,
@@ -70,6 +77,7 @@ export function manualAdvance() {
 }
 
 export function endRest() {
+  feedbackSuccess();
   sessionStore.update(s => ({ ...s, isResting: false }));
 }
 
@@ -79,6 +87,8 @@ export function completeSet(targetReps: number, autoAdvance: boolean) {
     
     let nextRound = s.currentRound;
     let isResting: boolean = s.isResting;
+
+    feedbackSuccess();
 
     if (autoAdvance) {
       nextRound++;
