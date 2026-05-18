@@ -51,15 +51,36 @@
 
   let activePreset = $derived($presetsStore.find(p => p.id === $sessionStore.activePresetId) || defaultPreset);
   let isSettingsOpen = $state(false);
+
+  // Session-specific overrides (reset when preset changes)
+  let overrideTargetReps = $state<number | null>(null);
+  let overrideBreakDuration = $state<number | null>(null);
+
+  $effect(() => {
+    // Reset overrides when preset changes
+    if ($sessionStore.activePresetId) {
+      overrideTargetReps = null;
+      overrideBreakDuration = null;
+    }
+  });
+
+  let currentTargetReps = $derived(overrideTargetReps ?? activePreset.repsPerRound);
+  let currentBreakDuration = $derived(overrideBreakDuration ?? activePreset.breakDuration);
 </script>
 
 <main class="w-screen h-screen bg-black overflow-hidden font-sans select-none text-white">
-  {#if $sessionStore.currentRound > activePreset.rounds}
+  {#if $sessionStore.currentRound > $sessionStore.totalRounds}
     <Success onMenu={() => isSettingsOpen = true} />
-  {:else if $sessionStore.isResting && activePreset.breakDuration > 0}
-    <Timer duration={activePreset.breakDuration} />
+  {:else if $sessionStore.isResting && currentBreakDuration > 0}
+    <Timer duration={currentBreakDuration} />
   {:else}
-    <Counter targetReps={activePreset.repsPerRound} onOpenSettings={() => isSettingsOpen = true} />
+    <Counter 
+      targetReps={currentTargetReps} 
+      restDuration={currentBreakDuration}
+      onUpdateTarget={(val) => overrideTargetReps = val}
+      onUpdateRest={(val) => overrideBreakDuration = val}
+      onOpenSettings={() => isSettingsOpen = true} 
+    />
   {/if}
 
   {#if isSettingsOpen}

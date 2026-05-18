@@ -3,10 +3,12 @@
   import { sessionStore } from '../store';
   import { fade, fly } from 'svelte/transition';
 
-  let { onclose, targetReps, onUpdateTarget }: { 
+  let { onclose, targetReps, onUpdateTarget, restDuration, onUpdateRest }: { 
     onclose: () => void, 
     targetReps: number, 
-    onUpdateTarget: (val: number) => void 
+    onUpdateTarget: (val: number) => void,
+    restDuration: number,
+    onUpdateRest: (val: number) => void
   } = $props();
 </script>
 
@@ -37,6 +39,23 @@
           >−</button>
           <button 
             onclick={() => onUpdateTarget(Number(targetReps) + 1)}
+            class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
+          >+</button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Break Time (s)</div>
+          <div class="text-3xl font-light">{restDuration}</div>
+        </div>
+        <div class="flex gap-4">
+          <button 
+            onclick={() => onUpdateRest(Math.max(5, Number(restDuration) - 5))}
+            class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
+          >−</button>
+          <button 
+            onclick={() => onUpdateRest(Number(restDuration) + 5)}
             class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
           >+</button>
         </div>

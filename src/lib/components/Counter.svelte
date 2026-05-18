@@ -3,14 +3,21 @@
   import { sessionStore, settingsStore, incrementRep, manualAdvance, completeSet } from '../store';
   import QuickAdjust from './QuickAdjust.svelte';
   
-  let { targetReps: initialTargetReps, onOpenSettings }: { targetReps: number, onOpenSettings: () => void } = $props();
+  let { 
+    targetReps, 
+    restDuration,
+    onUpdateTarget,
+    onUpdateRest,
+    onOpenSettings 
+  }: { 
+    targetReps: number, 
+    restDuration: number,
+    onUpdateTarget: (val: number) => void,
+    onUpdateRest: (val: number) => void,
+    onOpenSettings: () => void 
+  } = $props();
 
-  let targetReps = $state(initialTargetReps);
   let showQuickAdjust = $state(false);
-
-  $effect(() => {
-    targetReps = initialTargetReps;
-  });
 </script>
 
 <div 
@@ -86,7 +93,9 @@
 {#if showQuickAdjust}
   <QuickAdjust 
     targetReps={targetReps}
-    onUpdateTarget={(val) => targetReps = val}
+    onUpdateTarget={onUpdateTarget}
+    restDuration={restDuration}
+    onUpdateRest={onUpdateRest}
     onclose={() => showQuickAdjust = false}
   />
 {/if}
