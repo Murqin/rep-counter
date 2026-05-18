@@ -4,7 +4,7 @@
   import Timer from './lib/components/Timer.svelte';
   import Success from './lib/components/Success.svelte';
   import PresetManager from './lib/components/PresetManager.svelte';
-  import { sessionStore, presetsStore } from './lib/store';
+  import { sessionStore, presetsStore, settingsStore } from './lib/store';
   import type { Preset } from './lib/types';
   import { requestWakeLock, type WakeLockSentinel } from './lib/wakeLock';
 
