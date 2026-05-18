@@ -1,25 +1,30 @@
 import { render, fireEvent } from '@testing-library/svelte';
 import Timer from './Timer.svelte';
-import { sessionStore, endRest, updateTimer } from '../store';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { tick } from 'svelte';
 import { writable } from 'svelte/store';
 
+// Define the mock object outside any variables to avoid hoisting issues
 vi.mock('../store', () => {
+  const sessionStore = writable({
+    activePresetId: null,
+    currentRound: 1,
+    currentRep: 0,
+    isResting: true,
+    totalRounds: 5,
+    timeLeft: 60,
+    lastTick: Date.now()
+  });
+
   return {
-    sessionStore: writable({
-      activePresetId: null,
-      currentRound: 1,
-      currentRep: 0,
-      isResting: true,
-      totalRounds: 5,
-      timeLeft: 60,
-      lastTick: Date.now()
-    }),
+    sessionStore,
     endRest: vi.fn(),
     updateTimer: vi.fn()
   };
 });
+
+// Import the mocked store
+import { sessionStore, endRest } from '../store';
 
 describe('Timer Component', () => {
   beforeEach(() => {
