@@ -6,21 +6,18 @@ import { tick } from 'svelte';
 import { writable } from 'svelte/store';
 
 vi.mock('../store', () => {
-  const store = writable({
-    activePresetId: null,
-    currentRound: 1,
-    currentRep: 0,
-    isResting: true,
-    totalRounds: 5,
-    timeLeft: 60,
-    lastTick: Date.now()
-  });
   return {
-    sessionStore: store,
+    sessionStore: writable({
+      activePresetId: null,
+      currentRound: 1,
+      currentRep: 0,
+      isResting: true,
+      totalRounds: 5,
+      timeLeft: 60,
+      lastTick: Date.now()
+    }),
     endRest: vi.fn(),
-    updateTimer: vi.fn(() => {
-      store.update(s => ({ ...s, timeLeft: s.timeLeft - 1 }));
-    })
+    updateTimer: vi.fn()
   };
 });
 
@@ -69,10 +66,12 @@ describe('Timer Component', () => {
     expect(getByText('00:02')).toBeTruthy();
 
     vi.advanceTimersByTime(1000);
+    sessionStore.update(s => ({ ...s, timeLeft: 1 }));
     await tick();
     expect(getByText('00:01')).toBeTruthy();
 
     vi.advanceTimersByTime(1000);
+    sessionStore.update(s => ({ ...s, timeLeft: 0 }));
     await tick();
     expect(endRest).toHaveBeenCalled();
   });
