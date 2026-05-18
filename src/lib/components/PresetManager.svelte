@@ -57,10 +57,11 @@
     }
   }
 
-  function selectPreset(id: string) {
+  function selectPreset(preset: Preset) {
     sessionStore.update(s => ({
       ...s,
-      activePresetId: id,
+      activePresetId: preset.id,
+      totalRounds: preset.rounds,
       currentRound: 1,
       currentRep: 0,
       isResting: false
@@ -102,8 +103,8 @@
         <div 
           role="button"
           tabindex="0"
-          onclick={() => selectPreset(preset.id)}
-          onkeydown={(e) => e.key === 'Enter' && selectPreset(preset.id)}
+          onclick={() => selectPreset(preset)}
+          onkeydown={(e) => e.key === 'Enter' && selectPreset(preset)}
           class="w-full flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all group cursor-pointer {$sessionStore.activePresetId === preset.id ? 'border-white/20 bg-white/[0.08]' : ''}"
         >
           <div class="text-left">

@@ -32,11 +32,11 @@
         </div>
         <div class="flex gap-4">
           <button 
-            onclick={() => onUpdateTarget(Math.max(1, targetReps - 1))}
+            onclick={() => onUpdateTarget(Math.max(1, Number(targetReps) - 1))}
             class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
           >−</button>
           <button 
-            onclick={() => onUpdateTarget(targetReps + 1)}
+            onclick={() => onUpdateTarget(Number(targetReps) + 1)}
             class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
           >+</button>
         </div>
@@ -49,11 +49,11 @@
         </div>
         <div class="flex gap-4">
           <button 
-            onclick={() => sessionStore.update(s => ({ ...s, totalRounds: Math.max(1, s.totalRounds - 1) }))}
+            onclick={() => sessionStore.update(s => ({ ...s, totalRounds: Math.max(1, Number(s.totalRounds) - 1) }))}
             class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
           >−</button>
           <button 
-            onclick={() => sessionStore.update(s => ({ ...s, totalRounds: s.totalRounds + 1 }))}
+            onclick={() => sessionStore.update(s => ({ ...s, totalRounds: Number(s.totalRounds) + 1 }))}
             class="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center text-2xl active:bg-white/5"
           >+</button>
         </div>
