@@ -6,6 +6,10 @@
   let timeLeft = $state(duration);
   let interval: ReturnType<typeof setInterval>;
 
+  $effect(() => {
+    timeLeft = duration;
+  });
+
   onMount(() => {
     interval = setInterval(() => {
       timeLeft--;

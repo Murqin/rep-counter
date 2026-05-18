@@ -44,7 +44,7 @@ export function incrementRep(targetReps: number, autoAdvance: boolean) {
     if (s.isResting) return s;
     let nextRep = s.currentRep + 1;
     let nextRound = s.currentRound;
-    let isResting = s.isResting;
+    let isResting: boolean = s.isResting;
 
     if (nextRep >= targetReps && autoAdvance) {
       nextRep = 0;

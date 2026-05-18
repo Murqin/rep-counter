@@ -1,4 +1,4 @@
-import { render } from '@testing-library/svelte';
+import { render, fireEvent } from '@testing-library/svelte';
 import Timer from './Timer.svelte';
 import * as storeModule from '../store';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -27,6 +27,13 @@ describe('Timer Component', () => {
 
     vi.advanceTimersByTime(1000);
     await tick();
+    expect(storeModule.endRest).toHaveBeenCalled();
+  });
+
+  it('calls endRest when SKIP BREAK button is clicked', async () => {
+    const { getByText } = render(Timer, { duration: 60 });
+    const skipButton = getByText('SKIP BREAK');
+    await fireEvent.click(skipButton);
     expect(storeModule.endRest).toHaveBeenCalled();
   });
 });
