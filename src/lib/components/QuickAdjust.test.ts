@@ -25,10 +25,13 @@ describe('QuickAdjust Component', () => {
     const { getByText } = render(QuickAdjust, { 
       onclose: vi.fn(), 
       targetReps: 10, 
-      onUpdateTarget: vi.fn() 
+      onUpdateTarget: vi.fn(),
+      restDuration: 30,
+      onUpdateRest: vi.fn()
     });
 
     expect(getByText('10')).toBeTruthy();
+    expect(getByText('30')).toBeTruthy();
     expect(getByText('5')).toBeTruthy();
   });
 
@@ -37,7 +40,9 @@ describe('QuickAdjust Component', () => {
     const { getAllByText } = render(QuickAdjust, { 
       onclose: vi.fn(), 
       targetReps: 10, 
-      onUpdateTarget 
+      onUpdateTarget,
+      restDuration: 30,
+      onUpdateRest: vi.fn()
     });
 
     const plusButtons = getAllByText('+');
@@ -51,21 +56,44 @@ describe('QuickAdjust Component', () => {
     expect(onUpdateTarget).toHaveBeenCalledWith(9);
   });
 
-  it('updates sessionStore totalRounds when round buttons are clicked', async () => {
+  it('calls onUpdateRest when break time buttons are clicked', async () => {
+    const onUpdateRest = vi.fn();
     const { getAllByText } = render(QuickAdjust, { 
       onclose: vi.fn(), 
       targetReps: 10, 
-      onUpdateTarget: vi.fn() 
+      onUpdateTarget: vi.fn(),
+      restDuration: 30,
+      onUpdateRest
     });
 
     const plusButtons = getAllByText('+');
     const minusButtons = getAllByText('−');
 
-    // Total Rounds plus is the second '+' button
+    // Break Time plus is the second '+' button
     await fireEvent.click(plusButtons[1]);
-    expect(get(sessionStore).totalRounds).toBe(6);
+    expect(onUpdateRest).toHaveBeenCalledWith(35);
 
     await fireEvent.click(minusButtons[1]);
+    expect(onUpdateRest).toHaveBeenCalledWith(25);
+  });
+
+  it('updates sessionStore totalRounds when round buttons are clicked', async () => {
+    const { getAllByText } = render(QuickAdjust, { 
+      onclose: vi.fn(), 
+      targetReps: 10, 
+      onUpdateTarget: vi.fn(),
+      restDuration: 30,
+      onUpdateRest: vi.fn()
+    });
+
+    const plusButtons = getAllByText('+');
+    const minusButtons = getAllByText('−');
+
+    // Total Rounds plus is the third '+' button
+    await fireEvent.click(plusButtons[2]);
+    expect(get(sessionStore).totalRounds).toBe(6);
+
+    await fireEvent.click(minusButtons[2]);
     expect(get(sessionStore).totalRounds).toBe(5);
   });
 
@@ -74,7 +102,9 @@ describe('QuickAdjust Component', () => {
     const { getByText } = render(QuickAdjust, { 
       onclose, 
       targetReps: 10, 
-      onUpdateTarget: vi.fn() 
+      onUpdateTarget: vi.fn(),
+      restDuration: 30,
+      onUpdateRest: vi.fn()
     });
 
     const doneButton = getByText('DONE');
