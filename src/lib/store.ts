@@ -32,7 +32,9 @@ export const sessionStore = persistentWritable<SessionState>('rep-session', {
   currentRound: 1,
   currentRep: 0,
   isResting: false,
-  totalRounds: 0
+  totalRounds: 0,
+  timeLeft: 0,
+  lastTick: null
 });
 
 export const settingsStore = persistentWritable<Settings>('rep-settings', {
@@ -43,12 +45,36 @@ export const settingsStore = persistentWritable<Settings>('rep-settings', {
 
 export const presetsStore = persistentWritable<Preset[]>('rep-presets', []);
 
-export function incrementRep(targetReps: number, autoAdvance: boolean) {
+export function startRest(duration: number) {
+  sessionStore.update(s => ({
+    ...s,
+    isResting: true,
+    timeLeft: duration,
+    lastTick: Date.now()
+  }));
+}
+
+export function updateTimer() {
+  sessionStore.update(s => {
+    if (!s.isResting || s.timeLeft <= 0) return s;
+    const now = Date.now();
+    const elapsed = s.lastTick ? Math.floor((now - s.lastTick) / 1000) : 0;
+    if (elapsed >= 1) {
+      const nextTime = Math.max(0, s.timeLeft - elapsed);
+      return { ...s, timeLeft: nextTime, lastTick: now };
+    }
+    return s;
+  });
+}
+
+export function incrementRep(targetReps: number, autoAdvance: boolean, breakDuration: number) {
   sessionStore.update(s => {
     if (s.isResting) return s;
     let nextRep = s.currentRep + 1;
     let nextRound = s.currentRound;
     let isResting: boolean = s.isResting;
+    let timeLeft = s.timeLeft;
+    let lastTick = s.lastTick;
 
     if (nextRep >= targetReps && autoAdvance) {
       nextRep = 0;
@@ -57,36 +83,42 @@ export function incrementRep(targetReps: number, autoAdvance: boolean) {
       // Only set resting if we haven't finished all rounds
       if (nextRound <= s.totalRounds) {
         isResting = true;
+        timeLeft = breakDuration;
+        lastTick = Date.now();
       }
     } else {
       feedbackRep();
     }
     
-    return { ...s, currentRep: nextRep, currentRound: nextRound, isResting };
+    return { ...s, currentRep: nextRep, currentRound: nextRound, isResting, timeLeft, lastTick };
   });
 }
 
-export function manualAdvance() {
+export function manualAdvance(breakDuration: number) {
   feedbackSuccess();
   sessionStore.update(s => ({
     ...s,
     currentRep: 0,
     currentRound: s.currentRound + 1,
-    isResting: true
+    isResting: true,
+    timeLeft: breakDuration,
+    lastTick: Date.now()
   }));
 }
 
 export function endRest() {
   feedbackSuccess();
-  sessionStore.update(s => ({ ...s, isResting: false }));
+  sessionStore.update(s => ({ ...s, isResting: false, timeLeft: 0, lastTick: null }));
 }
 
-export function completeSet(targetReps: number, autoAdvance: boolean) {
+export function completeSet(targetReps: number, autoAdvance: boolean, breakDuration: number) {
   sessionStore.update(s => {
     if (s.isResting) return s;
     
     let nextRound = s.currentRound;
     let isResting: boolean = s.isResting;
+    let timeLeft = s.timeLeft;
+    let lastTick = s.lastTick;
 
     feedbackSuccess();
 
@@ -94,6 +126,8 @@ export function completeSet(targetReps: number, autoAdvance: boolean) {
       nextRound++;
       if (nextRound <= s.totalRounds) {
         isResting = true;
+        timeLeft = breakDuration;
+        lastTick = Date.now();
       }
     }
     
@@ -101,7 +135,9 @@ export function completeSet(targetReps: number, autoAdvance: boolean) {
       ...s, 
       currentRep: autoAdvance ? 0 : targetReps, 
       currentRound: nextRound, 
-      isResting 
+      isResting,
+      timeLeft,
+      lastTick
     };
   });
 }

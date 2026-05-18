@@ -34,8 +34,8 @@
   <!-- Circular Click Area -->
   <div 
     class="flex flex-col items-center justify-center w-[85vw] h-[85vw] max-w-[400px] max-h-[400px] rounded-full border border-[var(--text-color)]/10 bg-transparent active:bg-[var(--text-color)]/5 transition-all duration-75 cursor-pointer outline-none focus:border-[var(--text-color)]/30 relative"
-    onclick={() => incrementRep(targetReps, $settingsStore.autoAdvance)}
-    onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && incrementRep(targetReps, $settingsStore.autoAdvance)}
+    onclick={() => incrementRep(targetReps, $settingsStore.autoAdvance, restDuration)}
+    onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && incrementRep(targetReps, $settingsStore.autoAdvance, restDuration)}
     role="button"
     tabindex="0"
     data-testid="counter-area"
@@ -74,7 +74,7 @@
 
     <button 
       class="mt-8 text-[10px] font-bold tracking-[0.2em] text-[var(--text-color)]/30 hover:text-[var(--text-color)] transition-all border border-[var(--text-color)]/10 px-6 py-2.5 rounded-full active:scale-95 z-10"
-      onclick={(e) => { e.stopPropagation(); completeSet(targetReps, $settingsStore.autoAdvance); }}
+      onclick={(e) => { e.stopPropagation(); completeSet(targetReps, $settingsStore.autoAdvance, restDuration); }}
     >
       FINISH ROUND
     </button>
@@ -83,7 +83,7 @@
   {#if !$settingsStore.autoAdvance && $sessionStore.currentRep >= targetReps}
     <button 
       class="mt-12 px-8 py-4 border border-[var(--text-color)]/20 rounded-full text-sm font-bold tracking-widest hover:bg-[var(--text-color)]/5 transition-colors z-10"
-      onclick={(e) => { e.stopPropagation(); manualAdvance(); }}
+      onclick={(e) => { e.stopPropagation(); manualAdvance(restDuration); }}
     >
       NEXT ROUND
     </button>
