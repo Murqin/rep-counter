@@ -2,7 +2,7 @@
 
 A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zero distractions. Built with **Svelte 5** and **Tailwind CSS v4**.
 
-![Logo](public/icon.svg)
+![Logo](assets/icon.svg)
 
 ## 📱 Screenshots
 
