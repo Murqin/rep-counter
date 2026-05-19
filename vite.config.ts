@@ -12,6 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['assets/icon.svg', 'assets/icon-512.png'],
       manifest: {
+        id: '/?source=pwa',
         name: 'Rep Counter',
         short_name: 'RepCounter',
         description: 'Minimalist AMOLED Rep Counter',
