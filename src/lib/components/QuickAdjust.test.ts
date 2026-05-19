@@ -79,6 +79,21 @@ describe('QuickAdjust Component', () => {
     expect(onUpdateRest).toHaveBeenCalledWith(25);
   });
 
+  it('allows rest duration to be decreased to 0 but not below', async () => {
+    const onUpdateRest = vi.fn();
+    const { getAllByText } = render(QuickAdjust, { 
+      onclose: vi.fn(), 
+      targetReps: 10, 
+      onUpdateTarget: vi.fn(),
+      restDuration: 5,
+      onUpdateRest
+    });
+
+    const minusButton = getAllByText('−')[1];
+    await fireEvent.click(minusButton);
+    expect(onUpdateRest).toHaveBeenCalledWith(0);
+  });
+
   it('updates sessionStore totalRounds when round buttons are clicked', async () => {
     const { getAllByText } = render(QuickAdjust, { 
       onclose: vi.fn(), 

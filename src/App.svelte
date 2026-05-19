@@ -56,11 +56,14 @@
   let overrideTargetReps = $state<number | null>(null);
   let overrideBreakDuration = $state<number | null>(null);
 
+  let lastPresetId = $sessionStore.activePresetId;
   $effect(() => {
-    // Reset overrides when preset changes
-    if ($sessionStore.activePresetId) {
+    // Only reset overrides when the preset ID actually changes
+    const currentId = $sessionStore.activePresetId;
+    if (currentId !== lastPresetId) {
       overrideTargetReps = null;
       overrideBreakDuration = null;
+      lastPresetId = currentId;
     }
   });
 

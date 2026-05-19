@@ -51,7 +51,7 @@
         </div>
         <div class="flex gap-4">
           <button 
-            onclick={() => onUpdateRest(Math.max(5, Number(restDuration) - 5))}
+            onclick={() => onUpdateRest(Math.max(0, Number(restDuration) - 5))}
             class="w-14 h-14 rounded-full border border-[var(--text-color)]/10 flex items-center justify-center text-2xl active:bg-[var(--text-color)]/5 text-[var(--text-color)]"
           >−</button>
           <button 
