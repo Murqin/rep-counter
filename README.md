@@ -7,10 +7,10 @@ A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zer
 ## 📱 Screenshots
 
 <p align="center">
-  <img src="public/screenshots/1.png" width="200" alt="Counter Screen" />
-  <img src="public/screenshots/3.png" width="200" alt="Rest Timer" />
-  <img src="public/screenshots/2.png" width="200" alt="Settings & Presets" />
-  <img src="public/screenshots/4.png" width="200" alt="Success Screen" />
+  <img src="screenshots/1.png" width="200" alt="Counter Screen" />
+  <img src="screenshots/3.png" width="200" alt="Rest Timer" />
+  <img src="screenshots/2.png" width="200" alt="Settings & Presets" />
+  <img src="screenshots/4.png" width="200" alt="Success Screen" />
 </p>
 
 ## ✨ Features
