@@ -11,7 +11,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['icon.svg', 'icon-512.png', 'screenshot1.png', 'screenshot2.png'],
+      includeAssets: ['icon.svg', 'icon-512.png', 'screenshots/1.png', 'screenshots/2.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         cleanupOutdatedCaches: true,
@@ -52,14 +52,14 @@ export default defineConfig({
         ],
         screenshots: [
           {
-            src: '/screenshot1.png',
+            src: '/screenshots/1.png',
             sizes: '1080x1920',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Counter Screen'
           },
           {
-            src: '/screenshot2.png',
+            src: '/screenshots/2.png',
             sizes: '1080x1920',
             type: 'image/png',
             form_factor: 'narrow',
