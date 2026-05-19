@@ -32,19 +32,19 @@ export default defineConfig({
         orientation: 'portrait',
         icons: [
           {
-            src: '/icon.svg',
+            src: 'icon.svg',
             sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'any'
           },
           {
-            src: '/icon-512.png',
+            src: 'icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: '/icon-512.png',
+            src: 'icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
@@ -52,32 +52,39 @@ export default defineConfig({
         ],
         screenshots: [
           {
-            src: '/screenshots/1.png',
-            sizes: '1080x1920',
+            src: 'screenshots/1.png',
+            sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Counter Screen'
           },
           {
-            src: '/screenshots/2.png',
-            sizes: '1080x1920',
+            src: 'screenshots/2.png',
+            sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Settings Screen'
           },
           {
-            src: '/screenshots/3.png',
-            sizes: '1080x1920',
+            src: 'screenshots/3.png',
+            sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Rest Timer'
           },
           {
-            src: '/screenshots/4.png',
-            sizes: '1080x1920',
+            src: 'screenshots/4.png',
+            sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Success Screen'
+          },
+          {
+            src: 'screenshots/1.png',
+            sizes: '1290x2220',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Counter Screen Desktop'
           }
         ]
       }
