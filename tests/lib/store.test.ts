@@ -53,6 +53,7 @@ describe('Store Logic', () => {
       currentRound: 1,
       currentRep: 0,
       isResting: false,
+      isTransitioning: false,
       totalRounds: 3,
       timeLeft: 0,
       lastTick: null
@@ -65,20 +66,20 @@ describe('Store Logic', () => {
   });
 
   it('incrementRep does not increase rep count while resting', () => {
-    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: true, totalRounds: 3, timeLeft: 30, lastTick: Date.now() });
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: true, isTransitioning: false, totalRounds: 3, timeLeft: 30, lastTick: Date.now() });
     incrementRep(10, false, 30);
     expect(get(sessionStore).currentRep).toBe(0);
   });
   
   it('incrementRep handles manual round completion without auto advance', () => {
-    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 9, isResting: false, totalRounds: 3, timeLeft: 0, lastTick: null });
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 9, isResting: false, isTransitioning: false, totalRounds: 3, timeLeft: 0, lastTick: null });
     incrementRep(10, false, 30);
     expect(get(sessionStore).currentRep).toBe(10);
     expect(get(sessionStore).currentRound).toBe(1); // Should not advance yet
   });
 
   it('incrementRep handles auto advance', () => {
-    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 9, isResting: false, totalRounds: 3, timeLeft: 0, lastTick: null });
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 9, isResting: false, isTransitioning: false, totalRounds: 3, timeLeft: 0, lastTick: null });
     incrementRep(10, true, 30);
     expect(get(sessionStore).currentRep).toBe(0);
     expect(get(sessionStore).currentRound).toBe(2);
@@ -88,14 +89,14 @@ describe('Store Logic', () => {
 
   it('incrementRep does not set isResting on last round completion', () => {
     // Current round 3 of 3. Completing reps should increment round to 4 and NOT set resting.
-    sessionStore.set({ activePresetId: '1', currentRound: 3, currentRep: 9, isResting: false, totalRounds: 3, timeLeft: 0, lastTick: null });
+    sessionStore.set({ activePresetId: '1', currentRound: 3, currentRep: 9, isResting: false, isTransitioning: false, totalRounds: 3, timeLeft: 0, lastTick: null });
     incrementRep(10, true, 30);
     expect(get(sessionStore).currentRound).toBe(4);
     expect(get(sessionStore).isResting).toBe(false);
   });
 
   it('manualAdvance advances to next round and starts resting', () => {
-    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 10, isResting: false, totalRounds: 3, timeLeft: 0, lastTick: null });
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 10, isResting: false, isTransitioning: false, totalRounds: 3, timeLeft: 0, lastTick: null });
     manualAdvance(30);
     expect(get(sessionStore).currentRep).toBe(0);
     expect(get(sessionStore).currentRound).toBe(2);
@@ -104,7 +105,7 @@ describe('Store Logic', () => {
   });
 
   it('completeSet advances to next round and starts resting when autoAdvance is true', () => {
-    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false, totalRounds: 5, timeLeft: 0, lastTick: null });
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false, isTransitioning: false, totalRounds: 5, timeLeft: 0, lastTick: null });
     completeSet(10, true, 30);
     const state = get(sessionStore);
     expect(state.currentRep).toBe(0);
@@ -114,7 +115,7 @@ describe('Store Logic', () => {
   });
 
   it('completeSet sets reps to target and does not advance round when autoAdvance is false', () => {
-    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false, totalRounds: 5, timeLeft: 0, lastTick: null });
+    sessionStore.set({ activePresetId: '1', currentRound: 1, currentRep: 0, isResting: false, isTransitioning: false, totalRounds: 5, timeLeft: 0, lastTick: null });
     completeSet(10, false, 30);
     const state = get(sessionStore);
     expect(state.currentRep).toBe(10);
@@ -123,7 +124,7 @@ describe('Store Logic', () => {
   });
 
   it('endRest sets isResting to false', () => {
-    sessionStore.set({ activePresetId: '1', currentRound: 2, currentRep: 0, isResting: true, totalRounds: 3, timeLeft: 15, lastTick: Date.now() });
+    sessionStore.set({ activePresetId: '1', currentRound: 2, currentRep: 0, isResting: true, isTransitioning: false, totalRounds: 3, timeLeft: 15, lastTick: Date.now() });
     endRest();
     expect(get(sessionStore).isResting).toBe(false);
   });

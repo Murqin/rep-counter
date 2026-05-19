@@ -13,6 +13,23 @@ export function vibrate(pattern: number | number[] = 50) {
   }
 }
 
+// Bug #8: Module-level singleton to prevent AudioContext leak on each sound call
+let sharedAudioContext: AudioContext | null = null;
+
+function getAudioContext(): AudioContext | null {
+  try {
+    if (sharedAudioContext && sharedAudioContext.state !== 'closed') {
+      return sharedAudioContext;
+    }
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return null;
+    sharedAudioContext = new AudioCtx();
+    return sharedAudioContext;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Plays a simple notification beep using Web Audio API.
  * @param frequency Frequency in Hz
@@ -23,10 +40,14 @@ export function playSound(frequency: number = 440, duration: number = 0.1) {
   if (!settings.enableFeedback) return;
 
   try {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContext) return;
+    const ctx = getAudioContext();
+    if (!ctx) return;
 
-    const ctx = new AudioContext();
+    // Resume if suspended (common on mobile after inactivity)
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 

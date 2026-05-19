@@ -68,7 +68,10 @@
         </div>
         <div class="flex gap-4">
           <button 
-            onclick={() => sessionStore.update(s => ({ ...s, totalRounds: Math.max(1, Number(s.totalRounds) - 1) }))}
+            onclick={() => sessionStore.update(s => ({
+              // Bug #7: Never go below currentRound to prevent premature Success screen
+              ...s, totalRounds: Math.max(s.currentRound, Math.max(1, Number(s.totalRounds) - 1))
+            }))}
             class="w-14 h-14 rounded-full border border-[var(--text-color)]/10 flex items-center justify-center text-2xl active:bg-[var(--text-color)]/5 text-[var(--text-color)]"
           >−</button>
           <button 

@@ -17,6 +17,11 @@
   };
 
   onMount(() => {
+    // Bug #6: Clear stale isTransitioning from localStorage (e.g., page refresh mid-transition)
+    if ($sessionStore.isTransitioning) {
+      sessionStore.update(s => ({ ...s, isTransitioning: false }));
+    }
+
     if ($presetsStore.length === 0) {
       presetsStore.set([defaultPreset]);
     }
@@ -31,6 +36,10 @@
     // Wake Lock Logic
     let lock: WakeLockSentinel | null = null;
     const acquireLock = async () => {
+      // Bug #9: Release previous lock before acquiring a new one
+      if (lock && !lock.released) {
+        try { lock.release(); } catch { /* ignore */ }
+      }
       lock = await requestWakeLock();
     };
     

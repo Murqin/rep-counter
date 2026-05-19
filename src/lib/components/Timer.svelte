@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import { get } from 'svelte/store';
   import { sessionStore, endRest, updateTimer } from '../store';
 
   let { duration }: { duration: number } = $props();
@@ -13,7 +14,8 @@
 
     interval = setInterval(() => {
       updateTimer();
-      if ($sessionStore.timeLeft <= 0) {
+      // Use get() instead of reactive $sessionStore to avoid stale closure reads
+      if (get(sessionStore).timeLeft <= 0) {
         clearInterval(interval);
         endRest();
       }
