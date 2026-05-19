@@ -73,6 +73,12 @@ npm test
 
 Designed specifically for mobile ergonomics. Features large hitboxes (min 44x44px), safe-area awareness for notches, and dynamic scaling for all screen sizes.
 
+## ❤️ Support the Project
+
+If you find this tool helpful, consider supporting its development:
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/murqin)
+
 ---
 
 Made with ❤️ by [Murqin](https://github.com/Murqin)

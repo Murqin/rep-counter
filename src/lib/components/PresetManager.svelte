@@ -253,6 +253,16 @@
       
       <div class="flex flex-col gap-3">
         <a 
+          href="https://buymeacoffee.com/murqin" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="flex items-center justify-center gap-3 w-full bg-[#FFDD00] hover:bg-[#FFCC00] text-black py-3.5 rounded-xl transition-all font-bold group shadow-lg"
+        >
+          <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy Me A Coffee" class="w-5 h-5" />
+          Buy Me a Coffee
+        </a>
+
+        <a 
           href="https://github.com/Murqin/rep-counter" 
           target="_blank" 
           rel="noopener noreferrer"
