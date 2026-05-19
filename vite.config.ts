@@ -11,7 +11,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['icon.svg', 'icon-512.png', 'screenshots/1.png', 'screenshots/2.png'],
+      includeAssets: ['icon.svg', 'icon-512.png', 'screenshots/1.png', 'screenshots/2.png', 'screenshots/3.png', 'screenshots/4.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         cleanupOutdatedCaches: true,
@@ -64,6 +64,20 @@ export default defineConfig({
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Settings Screen'
+          },
+          {
+            src: '/screenshots/3.png',
+            sizes: '1080x1920',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Rest Timer'
+          },
+          {
+            src: '/screenshots/4.png',
+            sizes: '1080x1920',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Success Screen'
           }
         ]
       }
