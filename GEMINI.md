@@ -25,7 +25,8 @@
 ## File Structure
 - **/src:** Source code.
 - **/tests:** All Vitest tests, mirroring the `src/` hierarchy.
-- **/assets:** Static assets like `icon.svg` and screenshots.
+- **/public:** Static assets like `logo.svg`, `logo-512.png`, and screenshots.
+- **/screenshots:** Project screenshots for GitHub (copies of public/screenshots).
 
 ## Workflow
 1. **Validation:** `npm run check` and `npm test` must pass before any push.
