@@ -10,7 +10,14 @@ export default defineConfig({
     svelte(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       includeAssets: ['assets/icon.svg', 'assets/icon-512.png'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true
+      },
       manifest: {
         id: '/?source=pwa',
         name: 'Rep Counter',
@@ -19,6 +26,7 @@ export default defineConfig({
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui'],
         scope: '/',
         start_url: '/',
         orientation: 'portrait',
