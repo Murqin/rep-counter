@@ -1,8 +1,13 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background Circle (AMOLED Black) -->
+  <!-- AMOLED Black Background -->
   <circle cx="256" cy="256" r="256" fill="black"/>
   
-  <!-- "R" and "C" Stylized (Minimalist White) -->
-  <path d="M160 160V352M160 160H240C270 160 290 180 290 210C290 240 270 260 240 260H160M240 260L300 352" stroke="white" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M420 200C400 175 370 160 335 160C280 160 240 205 240 256C240 307 280 352 335 352C370 352 400 337 420 312" stroke="white" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Intertwined / Complementary RC -->
+  <g transform="translate(256, 256)">
+    <!-- The "C" forms the outer frame -->
+    <path d="M120 -80C100 -120 50 -140 0 -140C-77 -140 -140 -77 -140 0C-140 77 -77 140 0 140C50 140 100 120 120 80" stroke="white" stroke-width="35" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- The "R" - Spine lowered to not stick out at the top -->
+    <path d="M-40 -60V140M-40 -60H30C60 -60 80 -40 80 -10C80 20 60 40 30 40H-40M30 40L80 140" stroke="white" stroke-width="35" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
 </svg>
