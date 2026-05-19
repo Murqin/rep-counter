@@ -65,7 +65,7 @@
       </div>
     </button>
 
-    <div class="text-[6rem] xs:text-[8rem] sm:text-[10rem] leading-none font-light tabular-nums tracking-tighter my-2">{$sessionStore.currentRep}</div>
+    <div class="text-[8rem] xs:text-[10rem] sm:text-[12rem] leading-none font-light tabular-nums tracking-tighter my-2">{$sessionStore.currentRep}</div>
     
     <button 
       type="button"
@@ -74,7 +74,7 @@
     >
       <div class="relative flex items-center justify-center">
         <span 
-          class="text-[8px] xs:text-[10px] font-bold text-gray-700 tracking-[0.15em] group-hover/target:text-[var(--text-color)] transition-colors border-b border-dotted border-gray-800 group-hover/target:border-[var(--text-color)]/30"
+          class="text-[10px] xs:text-xs font-bold text-gray-700 tracking-[0.15em] group-hover/target:text-[var(--text-color)] transition-colors border-b border-dotted border-gray-800 group-hover/target:border-[var(--text-color)]/30"
         >
           TARGET REPS {targetReps}
         </span>

@@ -4,6 +4,15 @@ A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zer
 
 ![Logo](public/icon.svg)
 
+## 📱 Screenshots
+
+<p align="center">
+  <img src="assets/screenshots/1_counter.png" width="200" alt="Counter Screen" />
+  <img src="assets/screenshots/3_timer.png" width="200" alt="Rest Timer" />
+  <img src="assets/screenshots/2_settings.png" width="200" alt="Settings & Presets" />
+  <img src="assets/screenshots/4_success.png" width="200" alt="Success Screen" />
+</p>
+
 ## ✨ Features
 
 - **AMOLED-First Design:** Pure black background to save battery and look stunning on OLED screens.

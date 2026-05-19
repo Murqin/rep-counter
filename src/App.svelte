@@ -79,20 +79,28 @@
   });
 </script>
 
-<main class="fixed inset-0 bg-[var(--bg-color)] font-sans select-none text-[var(--text-color)] flex flex-col items-center justify-center overflow-hidden">
-  {#if $sessionStore.currentRound > $sessionStore.totalRounds}
-    <Success onMenu={() => isSettingsOpen = true} />
-  {:else if $sessionStore.isResting && currentBreakDuration > 0}
-    <Timer duration={currentBreakDuration} />
-  {:else}
-    <Counter 
-      targetReps={currentTargetReps} 
-      restDuration={currentBreakDuration}
-      onUpdateTarget={(val) => overrideTargetReps = val}
-      onUpdateRest={(val) => overrideBreakDuration = val}
-      onOpenSettings={() => isSettingsOpen = true} 
-    />
-  {/if}
+<main class="fixed inset-0 bg-[var(--bg-color)] font-sans select-none text-[var(--text-color)] overflow-hidden">
+  <div class="relative w-full h-full">
+    {#if $sessionStore.currentRound > $sessionStore.totalRounds}
+      <div class="absolute inset-0">
+        <Success onMenu={() => isSettingsOpen = true} />
+      </div>
+    {:else if $sessionStore.isResting && currentBreakDuration > 0}
+      <div class="absolute inset-0">
+        <Timer duration={currentBreakDuration} />
+      </div>
+    {:else}
+      <div class="absolute inset-0">
+        <Counter 
+          targetReps={currentTargetReps} 
+          restDuration={currentBreakDuration}
+          onUpdateTarget={(val) => overrideTargetReps = val}
+          onUpdateRest={(val) => overrideBreakDuration = val}
+          onOpenSettings={() => isSettingsOpen = true} 
+        />
+      </div>
+    {/if}
+  </div>
 
   {#if isSettingsOpen}
     <PresetManager onclose={() => isSettingsOpen = false} />
