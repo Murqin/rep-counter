@@ -26,4 +26,4 @@ To prevent the timer from resetting on page refresh, the `sessionStore` tracks:
 ## Workflow
 1. **Validation:** Always run `npm run check` and `npm test` before building.
 2. **Persistence:** Any new session state must be added to `SessionState` in `types.ts` and initialized in `store.ts`.
-3. **Tests:** Maintain 100% pass rate. Mock stores correctly in Vitest (see `Timer.test.ts` for hoisting-safe mocking pattern).
+3. **Tests:** Maintain 100% pass rate. All tests are located in the `tests/` directory, mirroring the `src/` structure. Mock stores correctly in Vitest (see `tests/lib/components/Timer.test.ts` for hoisting-safe mocking pattern).

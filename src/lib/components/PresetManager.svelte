@@ -94,7 +94,7 @@
 >
   <div 
     transition:fly={{ y: 20, duration: 300 }}
-    class="w-full max-w-lg bg-[var(--bg-color)] border-x border-b border-[var(--text-color)]/10 rounded-b-2xl p-6 md:p-8 space-y-8 mb-8"
+    class="w-full max-w-lg bg-[var(--bg-color)] border-x border-b border-[var(--text-color)]/10 rounded-b-2xl p-6 md:p-8 space-y-8 mb-8 pb-24"
   >
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-light tracking-tight">Settings</h2>

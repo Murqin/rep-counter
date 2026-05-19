@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { sessionStore } from './store';
+import { sessionStore } from '../../src/lib/store';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('NaN Reproduction', () => {

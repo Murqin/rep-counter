@@ -33,7 +33,8 @@
 
   <!-- Circular Click Area -->
   <div 
-    class="flex flex-col items-center justify-center w-[85vw] h-[85vw] max-w-[400px] max-h-[400px] rounded-full border border-[var(--text-color)]/10 bg-transparent active:bg-[var(--text-color)]/5 transition-all duration-75 cursor-pointer outline-none focus:border-[var(--text-color)]/30 relative"
+    class="flex flex-col items-center justify-center w-[min(85vw,400px)] h-[min(85vw,400px)] lg:w-[400px] lg:h-[400px] rounded-full border border-[var(--text-color)]/10 bg-transparent active:bg-[var(--text-color)]/5 transition-all duration-75 cursor-pointer outline-none focus:border-[var(--text-color)]/30 relative"
+    style="height: min(85vw, 60vh, 400px); width: min(85vw, 60vh, 400px);"
     onclick={() => incrementRep(targetReps, $settingsStore.autoAdvance, restDuration)}
     onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && incrementRep(targetReps, $settingsStore.autoAdvance, restDuration)}
     role="button"

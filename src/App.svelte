@@ -79,7 +79,7 @@
   });
 </script>
 
-<main class="w-screen h-screen bg-[var(--bg-color)] overflow-hidden font-sans select-none text-[var(--text-color)]">
+<main class="w-full min-h-[100dvh] bg-[var(--bg-color)] overflow-y-auto font-sans select-none text-[var(--text-color)]">
   {#if $sessionStore.currentRound > $sessionStore.totalRounds}
     <Success onMenu={() => isSettingsOpen = true} />
   {:else if $sessionStore.isResting && currentBreakDuration > 0}

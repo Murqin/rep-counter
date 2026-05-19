@@ -1,11 +1,11 @@
 import { render, fireEvent } from '@testing-library/svelte';
-import Timer from './Timer.svelte';
+import Timer from '../../../src/lib/components/Timer.svelte';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { tick } from 'svelte';
 import { writable } from 'svelte/store';
 
 // Mock the store entirely without using any imports inside the factory
-vi.mock('../store', () => {
+vi.mock('../../../src/lib/store', () => {
   const mockStore = {
     subscribe: (fn: any) => {
       fn({
@@ -31,7 +31,7 @@ vi.mock('../store', () => {
 });
 
 // Import them AFTER mocking
-import { sessionStore, endRest } from '../store';
+import { sessionStore, endRest } from '../../../src/lib/store';
 
 describe('Timer Component', () => {
   beforeEach(() => {

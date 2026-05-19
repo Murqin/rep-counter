@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { render, fireEvent } from '@testing-library/svelte';
-import QuickAdjust from './QuickAdjust.svelte';
-import { sessionStore } from '../store';
+import QuickAdjust from '../../../src/lib/components/QuickAdjust.svelte';
+import { sessionStore } from '../../../src/lib/store';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { get } from 'svelte/store';
 

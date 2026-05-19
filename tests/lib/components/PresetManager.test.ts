@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { render, fireEvent } from '@testing-library/svelte';
-import PresetManager from './PresetManager.svelte';
-import { presetsStore, sessionStore } from '../store';
+import PresetManager from '../../../src/lib/components/PresetManager.svelte';
+import { presetsStore, sessionStore } from '../../../src/lib/store';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('PresetManager Component', () => {

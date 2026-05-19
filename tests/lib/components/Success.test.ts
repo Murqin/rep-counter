@@ -1,7 +1,7 @@
 import { render, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import Success from './Success.svelte';
-import { sessionStore } from '../store';
+import Success from '../../../src/lib/components/Success.svelte';
+import { sessionStore } from '../../../src/lib/store';
 import { get } from 'svelte/store';
 
 vi.mock('svelte/transition', () => ({

@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { sessionStore, incrementRep, manualAdvance, endRest, completeSet, persistentWritable } from './store';
+import { sessionStore, incrementRep, manualAdvance, endRest, completeSet, persistentWritable } from '../../src/lib/store';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('persistentWritable', () => {

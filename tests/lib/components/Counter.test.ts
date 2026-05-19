@@ -1,8 +1,8 @@
 // src/lib/components/Counter.test.ts
 /** @vitest-environment jsdom */
 import { render, fireEvent } from '@testing-library/svelte';
-import Counter from './Counter.svelte';
-import * as storeModule from '../store';
+import Counter from '../../../src/lib/components/Counter.svelte';
+import * as storeModule from '../../../src/lib/store';
 import { vi, describe, it, expect } from 'vitest';
 
 vi.mock('svelte/transition', () => ({
@@ -10,7 +10,7 @@ vi.mock('svelte/transition', () => ({
   fly: () => ({ duration: 0 })
 }));
 
-vi.mock('../store', () => ({
+vi.mock('../../../src/lib/store', () => ({
   incrementRep: vi.fn(),
   manualAdvance: vi.fn(),
   sessionStore: {

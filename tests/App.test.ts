@@ -1,8 +1,8 @@
 // src/App.test.ts
 import { render, screen, act } from '@testing-library/svelte';
-import App from './App.svelte';
+import App from '../src/App.svelte';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { sessionStore, presetsStore } from './lib/store';
+import { sessionStore, presetsStore } from '../src/lib/store';
 
 vi.mock('svelte/transition', () => ({
   fade: () => {},
