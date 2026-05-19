@@ -42,6 +42,12 @@ export default defineConfig({
           },
           {
             src: '/icon-512.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
@@ -81,20 +87,6 @@ export default defineConfig({
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Success Screen'
-          },
-          {
-            src: '/screenshots/1.png',
-            sizes: '1290x2220',
-            type: 'image/png',
-            form_factor: 'wide',
-            label: 'Counter Screen Desktop'
-          },
-          {
-            src: '/screenshots/2.png',
-            sizes: '1290x2220',
-            type: 'image/png',
-            form_factor: 'wide',
-            label: 'Settings Screen Desktop'
           }
         ],
         shortcuts: [
@@ -104,6 +96,11 @@ export default defineConfig({
             icons: [{ src: '/icon-512.png', sizes: '192x192' }]
           }
         ]
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
+        navigateFallback: 'index.html'
       }
     })
   ],
