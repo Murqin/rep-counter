@@ -10,7 +10,7 @@ export default defineConfig({
     svelte(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['assets/icon.svg'],
+      includeAssets: ['assets/icon.svg', 'assets/icon-512.png'],
       manifest: {
         name: 'Rep Counter',
         short_name: 'RepCounter',
@@ -24,15 +24,21 @@ export default defineConfig({
         icons: [
           {
             src: 'assets/icon.svg',
-            sizes: '192x192',
+            sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'any'
           },
           {
-            src: 'assets/icon.svg',
+            src: 'assets/icon-512.png',
             sizes: '512x512',
-            type: 'image/svg+xml',
-            purpose: 'any maskable'
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: 'assets/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
           }
         ]
       }
