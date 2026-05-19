@@ -85,6 +85,27 @@ export default defineConfig({
             type: 'image/png',
             form_factor: 'wide',
             label: 'Counter Screen Desktop'
+          },
+          {
+            src: 'screenshots/2.png',
+            sizes: '1290x2220',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Settings Screen Desktop'
+          },
+          {
+            src: 'screenshots/3.png',
+            sizes: '1290x2220',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Rest Timer Desktop'
+          },
+          {
+            src: 'screenshots/4.png',
+            sizes: '1290x2220',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Success Screen Desktop'
           }
         ]
       }
