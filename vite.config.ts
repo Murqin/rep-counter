@@ -12,40 +12,42 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['logo.svg', 'logo-512.png', 'screenshots/1.png', 'screenshots/2.png', 'screenshots/3.png', 'screenshots/4.png'],
+      includeAssets: ['icon.svg', 'icon-512.png', 'screenshots/1.png', 'screenshots/2.png', 'screenshots/3.png', 'screenshots/4.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
-        skipWaiting: true
+        skipWaiting: true,
+        navigateFallbackDenylist: [/^\/sw.js$/]
       },
       manifest: {
         id: '/',
         name: 'Rep Counter',
         short_name: 'RepCounter',
-        description: 'Minimalist AMOLED Rep Counter',
+        description: 'A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zero distractions.',
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',
         display_override: ['standalone', 'minimal-ui'],
+        categories: ['fitness', 'health', 'productivity'],
         scope: '/',
         start_url: '/',
         orientation: 'portrait',
         icons: [
           {
-            src: '/logo.svg',
+            src: '/icon.svg',
             sizes: '512x512',
             type: 'image/svg+xml',
             purpose: 'any'
           },
           {
-            src: '/logo-512.png',
+            src: '/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: '/logo-512.png',
+            src: '/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
@@ -53,60 +55,53 @@ export default defineConfig({
         ],
         screenshots: [
           {
-            src: 'screenshots/1.png',
+            src: '/screenshots/1.png',
             sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Counter Screen'
           },
           {
-            src: 'screenshots/2.png',
+            src: '/screenshots/2.png',
             sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Settings Screen'
           },
           {
-            src: 'screenshots/3.png',
+            src: '/screenshots/3.png',
             sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Rest Timer'
           },
           {
-            src: 'screenshots/4.png',
+            src: '/screenshots/4.png',
             sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'narrow',
             label: 'Success Screen'
           },
           {
-            src: 'screenshots/1.png',
+            src: '/screenshots/1.png',
             sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'wide',
             label: 'Counter Screen Desktop'
           },
           {
-            src: 'screenshots/2.png',
+            src: '/screenshots/2.png',
             sizes: '1290x2220',
             type: 'image/png',
             form_factor: 'wide',
             label: 'Settings Screen Desktop'
-          },
+          }
+        ],
+        shortcuts: [
           {
-            src: 'screenshots/3.png',
-            sizes: '1290x2220',
-            type: 'image/png',
-            form_factor: 'wide',
-            label: 'Rest Timer Desktop'
-          },
-          {
-            src: 'screenshots/4.png',
-            sizes: '1290x2220',
-            type: 'image/png',
-            form_factor: 'wide',
-            label: 'Success Screen Desktop'
+            name: 'Quick Start',
+            url: '/',
+            icons: [{ src: '/icon-512.png', sizes: '192x192' }]
           }
         ]
       }
