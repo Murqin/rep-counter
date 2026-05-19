@@ -90,11 +90,11 @@
 
 <div 
   transition:fade={{ duration: 200 }}
-  class="fixed inset-0 z-50 flex items-start justify-center bg-[var(--bg-color)] overflow-y-auto"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-color)]/80 backdrop-blur-sm p-4 overflow-y-auto"
 >
   <div 
     transition:fly={{ y: 20, duration: 300 }}
-    class="w-full max-w-lg bg-[var(--bg-color)] border-x border-b border-[var(--text-color)]/10 rounded-b-2xl p-6 md:p-8 space-y-8 mb-8 pb-24"
+    class="w-full max-w-lg bg-[var(--bg-color)] border border-[var(--text-color)]/10 rounded-3xl p-6 md:p-8 space-y-8 shadow-2xl max-h-[90dvh] overflow-y-auto"
   >
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-light tracking-tight">Settings</h2>

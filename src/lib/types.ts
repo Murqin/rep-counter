@@ -12,6 +12,7 @@ export type SessionState = {
   currentRound: number;
   currentRep: number;
   isResting: boolean;
+  isTransitioning: boolean;
   totalRounds: number;
   timeLeft: number;
   lastTick: number | null;

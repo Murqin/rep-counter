@@ -1,6 +1,6 @@
 <!-- src/lib/components/Counter.svelte -->
 <script lang="ts">
-  import { sessionStore, settingsStore, incrementRep, manualAdvance, completeSet } from '../store';
+  import { sessionStore, settingsStore, incrementRep, manualAdvance, completeSet, advanceRound } from '../store';
   import QuickAdjust from './QuickAdjust.svelte';
   
   let { 
@@ -18,13 +18,22 @@
   } = $props();
 
   let showQuickAdjust = $state(false);
+
+  $effect(() => {
+    if ($sessionStore.isTransitioning) {
+      const timer = setTimeout(() => {
+        advanceRound();
+      }, 600); // 600ms pause to show the final rep
+      return () => clearTimeout(timer);
+    }
+  });
 </script>
 
 <div 
-  class="flex flex-col items-center justify-center w-full h-full bg-[var(--bg-color)] text-[var(--text-color)] select-none relative"
+  class="flex flex-col items-center justify-center w-full h-full bg-[var(--bg-color)] text-[var(--text-color)] select-none relative p-4"
 >
   <button 
-    class="absolute top-8 right-8 p-3 hover:bg-[var(--text-color)]/5 rounded-full transition-colors z-20"
+    class="absolute top-4 right-4 p-3 hover:bg-[var(--text-color)]/5 rounded-full transition-colors z-20"
     onclick={(e) => { e.stopPropagation(); onOpenSettings(); }}
     aria-label="Open Settings"
   >
@@ -33,8 +42,8 @@
 
   <!-- Circular Click Area -->
   <div 
-    class="flex flex-col items-center justify-center w-[min(85vw,400px)] h-[min(85vw,400px)] lg:w-[400px] lg:h-[400px] rounded-full border border-[var(--text-color)]/10 bg-transparent active:bg-[var(--text-color)]/5 transition-all duration-75 cursor-pointer outline-none focus:border-[var(--text-color)]/30 relative"
-    style="height: min(85vw, 60vh, 400px); width: min(85vw, 60vh, 400px);"
+    class="flex flex-col items-center justify-center rounded-full border border-[var(--text-color)]/10 bg-transparent active:bg-[var(--text-color)]/5 transition-all duration-75 cursor-pointer outline-none focus:border-[var(--text-color)]/30 relative"
+    style="height: min(85vw, 65vh, 400px); width: min(85vw, 65vh, 400px); max-height: 400px; max-width: 400px;"
     onclick={() => incrementRep(targetReps, $settingsStore.autoAdvance, restDuration)}
     onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && incrementRep(targetReps, $settingsStore.autoAdvance, restDuration)}
     role="button"
@@ -43,12 +52,12 @@
   >
     <button 
       type="button"
-      class="flex flex-col items-center justify-center p-4 -m-4 hover:bg-[var(--text-color)]/5 rounded-2xl transition-all cursor-pointer group/round relative z-10"
+      class="flex flex-col items-center justify-center p-2 -m-2 hover:bg-[var(--text-color)]/5 rounded-2xl transition-all cursor-pointer group/round relative z-10"
       onclick={(e) => { e.stopPropagation(); showQuickAdjust = true; }}
     >
       <div class="relative flex items-center justify-center">
         <span 
-          class="text-sm font-bold tracking-[0.2em] text-gray-500 uppercase group-hover/round:text-[var(--text-color)] transition-colors border-b border-dotted border-gray-700 group-hover/round:border-[var(--text-color)]/40"
+          class="text-[10px] xs:text-sm font-bold tracking-[0.2em] text-gray-500 uppercase group-hover/round:text-[var(--text-color)] transition-colors border-b border-dotted border-gray-700 group-hover/round:border-[var(--text-color)]/40"
         >
           Round {$sessionStore.currentRound}
         </span>
@@ -56,16 +65,16 @@
       </div>
     </button>
 
-    <div class="text-[10rem] leading-none font-light tabular-nums tracking-tighter my-2">{$sessionStore.currentRep}</div>
+    <div class="text-[6rem] xs:text-[8rem] sm:text-[10rem] leading-none font-light tabular-nums tracking-tighter my-2">{$sessionStore.currentRep}</div>
     
     <button 
       type="button"
-      class="flex flex-col items-center justify-center p-4 -m-4 mt-4 hover:bg-[var(--text-color)]/5 rounded-2xl transition-all cursor-pointer group/target relative z-10"
+      class="flex flex-col items-center justify-center p-2 -m-2 mt-2 hover:bg-[var(--text-color)]/5 rounded-2xl transition-all cursor-pointer group/target relative z-10"
       onclick={(e) => { e.stopPropagation(); showQuickAdjust = true; }}
     >
       <div class="relative flex items-center justify-center">
         <span 
-          class="text-xs font-bold text-gray-700 tracking-[0.15em] group-hover/target:text-[var(--text-color)] transition-colors border-b border-dotted border-gray-800 group-hover/target:border-[var(--text-color)]/30"
+          class="text-[8px] xs:text-[10px] font-bold text-gray-700 tracking-[0.15em] group-hover/target:text-[var(--text-color)] transition-colors border-b border-dotted border-gray-800 group-hover/target:border-[var(--text-color)]/30"
         >
           TARGET REPS {targetReps}
         </span>
@@ -74,7 +83,7 @@
     </button>
 
     <button 
-      class="mt-8 text-[10px] font-bold tracking-[0.2em] text-[var(--text-color)]/30 hover:text-[var(--text-color)] transition-all border border-[var(--text-color)]/10 px-6 py-2.5 rounded-full active:scale-95 z-10"
+      class="mt-6 sm:mt-8 text-[8px] xs:text-[10px] font-bold tracking-[0.2em] text-[var(--text-color)]/30 hover:text-[var(--text-color)] transition-all border border-[var(--text-color)]/10 px-4 xs:px-6 py-2 rounded-full active:scale-95 z-10"
       onclick={(e) => { e.stopPropagation(); completeSet(targetReps, $settingsStore.autoAdvance, restDuration); }}
     >
       FINISH ROUND
@@ -83,7 +92,7 @@
   
   {#if !$settingsStore.autoAdvance && $sessionStore.currentRep >= targetReps}
     <button 
-      class="mt-12 px-8 py-4 border border-[var(--text-color)]/20 rounded-full text-sm font-bold tracking-widest hover:bg-[var(--text-color)]/5 transition-colors z-10"
+      class="mt-8 sm:mt-12 px-6 xs:px-8 py-3 xs:py-4 border border-[var(--text-color)]/20 rounded-full text-xs xs:text-sm font-bold tracking-widest hover:bg-[var(--text-color)]/5 transition-colors z-10"
       onclick={(e) => { e.stopPropagation(); manualAdvance(restDuration); }}
     >
       NEXT ROUND
@@ -100,3 +109,12 @@
     onclose={() => showQuickAdjust = false}
   />
 {/if}
+
+<style>
+  /* Extra scaling for very small screens */
+  @media (max-width: 340px) {
+    div[data-testid="counter-area"] {
+      border-width: 0.5px;
+    }
+  }
+</style>

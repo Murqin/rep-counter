@@ -32,6 +32,7 @@ export const sessionStore = persistentWritable<SessionState>('rep-session', {
   currentRound: 1,
   currentRep: 0,
   isResting: false,
+  isTransitioning: false,
   totalRounds: 0,
   timeLeft: 0,
   lastTick: null
@@ -49,6 +50,7 @@ export function startRest(duration: number) {
   sessionStore.update(s => ({
     ...s,
     isResting: true,
+    isTransitioning: false,
     timeLeft: duration,
     lastTick: Date.now()
   }));
@@ -69,76 +71,106 @@ export function updateTimer() {
 
 export function incrementRep(targetReps: number, autoAdvance: boolean, breakDuration: number) {
   sessionStore.update(s => {
-    if (s.isResting) return s;
+    if (s.isResting || s.isTransitioning) return s;
     let nextRep = s.currentRep + 1;
     let nextRound = s.currentRound;
     let isResting: boolean = s.isResting;
+    let isTransitioning: boolean = false;
     let timeLeft = s.timeLeft;
     let lastTick = s.lastTick;
 
     if (nextRep >= targetReps && autoAdvance) {
-      nextRep = 0;
-      nextRound++;
       feedbackSuccess();
-      // Only set resting if we haven't finished all rounds AND duration > 0
-      if (nextRound <= s.totalRounds && breakDuration > 0) {
-        isResting = true;
-        timeLeft = breakDuration;
-        lastTick = Date.now();
+      if (nextRound < s.totalRounds) {
+        if (breakDuration > 0) {
+          nextRep = 0;
+          nextRound++;
+          isResting = true;
+          timeLeft = breakDuration;
+          lastTick = Date.now();
+        } else {
+          // 0s Rest: Set transitioning to true to pause visually
+          isTransitioning = true;
+          // We'll reset this after a timeout in the component or a helper
+        }
+      } else {
+        // Last round complete
+        nextRound++;
       }
     } else {
       feedbackRep();
     }
     
-    return { ...s, currentRep: nextRep, currentRound: nextRound, isResting, timeLeft, lastTick };
+    return { ...s, currentRep: nextRep, currentRound: nextRound, isResting, isTransitioning, timeLeft, lastTick };
   });
+}
+
+export function advanceRound() {
+  sessionStore.update(s => ({
+    ...s,
+    currentRep: 0,
+    currentRound: s.currentRound + 1,
+    isTransitioning: false
+  }));
 }
 
 export function manualAdvance(breakDuration: number) {
   feedbackSuccess();
   sessionStore.update(s => {
-    const isResting = breakDuration > 0;
+    const shouldRest = breakDuration > 0;
+    if (!shouldRest) {
+      return { ...s, isTransitioning: true };
+    }
     return {
       ...s,
       currentRep: 0,
       currentRound: s.currentRound + 1,
-      isResting,
-      timeLeft: isResting ? breakDuration : 0,
-      lastTick: isResting ? Date.now() : null
+      isResting: true,
+      timeLeft: breakDuration,
+      lastTick: Date.now()
     };
   });
 }
 
 export function endRest() {
   feedbackSuccess();
-  sessionStore.update(s => ({ ...s, isResting: false, timeLeft: 0, lastTick: null }));
+  sessionStore.update(s => ({ ...s, isResting: false, isTransitioning: false, timeLeft: 0, lastTick: null }));
 }
 
 export function completeSet(targetReps: number, autoAdvance: boolean, breakDuration: number) {
   sessionStore.update(s => {
-    if (s.isResting) return s;
+    if (s.isResting || s.isTransitioning) return s;
     
     let nextRound = s.currentRound;
     let isResting: boolean = s.isResting;
+    let isTransitioning: boolean = false;
     let timeLeft = s.timeLeft;
     let lastTick = s.lastTick;
 
     feedbackSuccess();
 
     if (autoAdvance) {
-      nextRound++;
-      if (nextRound <= s.totalRounds && breakDuration > 0) {
-        isResting = true;
-        timeLeft = breakDuration;
-        lastTick = Date.now();
+      if (nextRound < s.totalRounds) {
+        if (breakDuration > 0) {
+          isResting = true;
+          timeLeft = breakDuration;
+          lastTick = Date.now();
+          return { ...s, currentRep: 0, currentRound: nextRound + 1, isResting, timeLeft, lastTick };
+        } else {
+          isTransitioning = true;
+          return { ...s, currentRep: targetReps, isTransitioning };
+        }
+      } else {
+        nextRound++;
+        return { ...s, currentRep: 0, currentRound: nextRound };
       }
     }
     
     return { 
       ...s, 
-      currentRep: autoAdvance ? 0 : targetReps, 
-      currentRound: nextRound, 
+      currentRep: targetReps, 
       isResting,
+      isTransitioning,
       timeLeft,
       lastTick
     };
