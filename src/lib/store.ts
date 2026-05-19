@@ -80,8 +80,8 @@ export function incrementRep(targetReps: number, autoAdvance: boolean, breakDura
       nextRep = 0;
       nextRound++;
       feedbackSuccess();
-      // Only set resting if we haven't finished all rounds
-      if (nextRound <= s.totalRounds) {
+      // Only set resting if we haven't finished all rounds AND duration > 0
+      if (nextRound <= s.totalRounds && breakDuration > 0) {
         isResting = true;
         timeLeft = breakDuration;
         lastTick = Date.now();
@@ -96,14 +96,17 @@ export function incrementRep(targetReps: number, autoAdvance: boolean, breakDura
 
 export function manualAdvance(breakDuration: number) {
   feedbackSuccess();
-  sessionStore.update(s => ({
-    ...s,
-    currentRep: 0,
-    currentRound: s.currentRound + 1,
-    isResting: true,
-    timeLeft: breakDuration,
-    lastTick: Date.now()
-  }));
+  sessionStore.update(s => {
+    const isResting = breakDuration > 0;
+    return {
+      ...s,
+      currentRep: 0,
+      currentRound: s.currentRound + 1,
+      isResting,
+      timeLeft: isResting ? breakDuration : 0,
+      lastTick: isResting ? Date.now() : null
+    };
+  });
 }
 
 export function endRest() {
@@ -124,7 +127,7 @@ export function completeSet(targetReps: number, autoAdvance: boolean, breakDurat
 
     if (autoAdvance) {
       nextRound++;
-      if (nextRound <= s.totalRounds) {
+      if (nextRound <= s.totalRounds && breakDuration > 0) {
         isResting = true;
         timeLeft = breakDuration;
         lastTick = Date.now();

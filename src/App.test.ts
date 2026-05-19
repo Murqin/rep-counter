@@ -30,7 +30,7 @@ describe('App Component Integration', () => {
     await act(() => {});
     
     expect(screen.getByText(/ROUND 1/i)).toBeTruthy();
-    expect(screen.getByText(/TARGET 10/i)).toBeTruthy();
+    expect(screen.getByText(/TARGET REPS 10/i)).toBeTruthy();
   });
 
   it('toggles between Counter and Timer based on isResting', async () => {
