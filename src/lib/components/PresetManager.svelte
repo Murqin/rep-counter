@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { presetsStore, sessionStore, settingsStore, wakeLockActive } from '../store';
+  import { presetsStore, sessionStore, settingsStore, wakeLockActive, sanitizeName } from '../store';
   import { t, availableLanguages, languageNames } from '../i18n';
   import type { Preset } from '../types';
   import { fade, fly } from 'svelte/transition';
@@ -25,16 +25,20 @@
     // Bug #10: Validate numeric bounds
     if (newRounds < 1 || newReps < 1 || newBreak < 0) return;
     
+    // Security F-1: Sanitize name before saving
+    const safeName = sanitizeName(newName);
+    if (!safeName) return;
+    
     if (editingId) {
       presetsStore.update(p => p.map(preset => 
         preset.id === editingId 
-          ? { ...preset, name: newName, rounds: newRounds, repsPerRound: newReps, breakDuration: newBreak }
+          ? { ...preset, name: safeName, rounds: newRounds, repsPerRound: newReps, breakDuration: newBreak }
           : preset
       ));
     } else {
       const newPreset: Preset = {
         id: crypto.randomUUID(),
-        name: newName,
+        name: safeName,
         rounds: newRounds,
         repsPerRound: newReps,
         breakDuration: newBreak
@@ -320,7 +324,7 @@
           rel="noopener noreferrer"
           class="flex items-center justify-center gap-3 w-full bg-[#FFDD00] hover:bg-[#FFCC00] text-black py-3.5 rounded-xl transition-all font-bold group shadow-lg"
         >
-          <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy Me A Coffee" class="w-5 h-5" />
+          <img src="/bmc-logo.svg" alt="Buy Me A Coffee" class="w-5 h-5" />
           {$t('buyMeCoffee')}
         </a>
 
