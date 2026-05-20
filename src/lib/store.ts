@@ -46,16 +46,6 @@ export const settingsStore = persistentWritable<Settings>('rep-settings', {
 
 export const presetsStore = persistentWritable<Preset[]>('rep-presets', []);
 
-export function startRest(duration: number) {
-  sessionStore.update(s => ({
-    ...s,
-    isResting: true,
-    isTransitioning: false,
-    timeLeft: duration,
-    lastTick: Date.now()
-  }));
-}
-
 export function updateTimer() {
   sessionStore.update(s => {
     if (!s.isResting || s.timeLeft <= 0) return s;
