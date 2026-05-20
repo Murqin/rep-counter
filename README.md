@@ -17,7 +17,7 @@ A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zer
   </a>
 </p>
 
-⚡ **[Live Demo / Siteden Dene](https://rep-counter-sapphire.vercel.app/)**
+⚡ **[Live Demo](https://rep-counter-sapphire.vercel.app/)**
 
 ---
 
