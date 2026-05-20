@@ -2,44 +2,101 @@
 
 A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zero distractions. Built with **Svelte 5** and **Tailwind CSS v4**.
 
-![Logo](public/icon.svg)
+<p align="center">
+  <a href="https://svelte.dev">
+    <img src="https://img.shields.io/badge/Svelte-5-ff3e00?style=for-the-badge&logo=svelte&logoColor=white" alt="Svelte 5" />
+  </a>
+  <a href="https://tailwindcss.com">
+    <img src="https://img.shields.io/badge/Tailwind_CSS-v4-06b6d4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4" />
+  </a>
+  <a href="https://www.typescriptlang.org">
+    <img src="https://img.shields.io/badge/TypeScript-5.x-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  </a>
+  <a href="https://rep-counter-sapphire.vercel.app/">
+    <img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel Deployed" />
+  </a>
+</p>
+
+⚡ **[Live Demo / Siteden Dene](https://rep-counter-sapphire.vercel.app/)**
+
+---
 
 ## 📱 Screenshots
 
 <p align="center">
-  <img src="public/screenshots/1.png" width="200" alt="Counter Screen" />
-  <img src="public/screenshots/3.png" width="200" alt="Rest Timer" />
-  <img src="public/screenshots/2.png" width="200" alt="Settings & Presets" />
-  <img src="public/screenshots/4.png" width="200" alt="Success Screen" />
+  <img src="public/screenshots/1.png" width="190" alt="Counter Screen" />
+  <img src="public/screenshots/2.png" width="190" alt="Rest Timer" />
+  <img src="public/screenshots/3.png" width="190" alt="Success Screen" />
+  <img src="public/screenshots/4.png" width="190" alt="Settings & Presets" />
 </p>
+
+---
 
 ## ✨ Features
 
-- **AMOLED-First Design:** Pure black background to save battery and look stunning on OLED screens.
-- **Smart Persistence:** Never lose your progress. The timer and session state survive page refreshes and accidental closes.
-- **PWA Ready:** Install it on your phone like a native app. Works offline and stays in your pocket.
-- **Custom Routines:** Create, edit, and manage your own workout presets.
-- **Seamless Flow:** 0-second rest support for high-intensity sessions with smooth visual transitions.
-- **Haptic & Sound Feedback:** Get physical confirmation for every rep and set completed.
-- **Privacy Focused:** No tracking, no ads, no cloud sync. Everything stays on your device.
+- **AMOLED-First Design:** Pure black background (`#000000`) to save battery life on modern OLED screens while looking incredibly sleek.
+- **Smart Persistence:** Never lose your workout. The timer and session state survive page refreshes and accidental browser closes by calculating delta timestamps (`lastTick`).
+- **PWA Ready (Rich Install UI):** Installs as a standalone application on mobile and desktop. Includes high-quality app screenshots and description in the installation prompt.
+- **Custom Routines:** Easily create, edit, and delete custom workout routines.
+- **Seamless Flow:** 0-second rest support for high-intensity training with a 600ms transition pause to keep the visual pacing natural.
+- **Haptic & Sound Feedback:** Short haptic taps for reps and rich audio feedback for completed sets. Fully toggleable in settings.
+- **Privacy Focused:** No trackers, no ads, no cloud database. Everything is securely stored in your browser's local storage.
+
+---
+
+## 🏗 Architecture
+
+The app uses Svelte 5 Runes combined with persistent writable stores to maintain an offline-first state structure:
+
+```mermaid
+graph TD
+    UI[App.svelte & Components] -->|Trigger Actions| Store[store.ts]
+    Store -->|Update State| Session[SessionState Store]
+    Store -->|Update Config| Settings[Settings Store]
+    
+    Session -->|Reactivity via Svelte Runes| UI
+    Settings -->|Apply Theme & Sound| UI
+    
+    Store -->|Auto-save / Auto-load| LS[(LocalStorage)]
+    
+    Timer[Timer.svelte] -->|Unix Timestamp Delta| SmartTick[updateTimer]
+    SmartTick -->|Prevent Ghost Ticks| Session
+    
+    Feedback[feedback.ts] -->|Haptic & Audio Beep| User((User))
+```
+
+---
 
 ## 🛠 Tech Stack
 
-- **Framework:** Svelte 5 (using the latest Runes: `$state`, `$derived`, `$effect`)
-- **Styling:** Tailwind CSS v4
-- **State Management:** Svelte Stores with LocalStorage persistence
+- **Framework:** Svelte 5 (utilizing Svelte runes: `$state`, `$derived`, `$effect`)
+- **Styling:** Tailwind CSS v4 + Vanilla CSS Custom Variables for flexible theming
+- **PWA Engine:** `vite-plugin-pwa` with custom Workbox caching strategy
 - **Build Tool:** Vite
-- **Testing:** Vitest + Testing Library
+- **Testing Suite:** Vitest + Testing Library + JSDom
+
+---
+
+## 📲 PWA Installation Guide
+
+### Mobile (Android & iOS)
+- **Brave / Chrome (Android):** Open the site, tap the **"Install"** button. The browser will present a rich app store-like overlay with screenshots. Tap "Install" to add it to your launcher.
+- **Firefox (Android):** Open the site, tap the `⋮` menu, and select **"Install"**.
+- **Safari (iOS):** Open the site, tap the **Share** button, and select **"Add to Home Screen"**.
+- *Note:* If you click add but the icon doesn't appear on Android, make sure the browser has the `"Add home screen shortcuts"` system permission enabled under your phone's App Info settings.
+
+### Desktop (Windows, macOS, Linux)
+- Open the site in any Chromium-based browser (Brave, Chrome, Edge), click the **Install icon** in the right-side of the address bar, and confirm the installation.
+
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 - Node.js (v18 or higher)
-- npm or pnpm
+- npm or pnpm / yarn
 
 ### Installation
-
 1. Clone the repository:
    ```bash
    git clone https://github.com/Murqin/rep-counter.git
@@ -51,27 +108,33 @@ A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zer
    npm install
    ```
 
-3. Start the development server:
+3. Start development server:
    ```bash
    npm run dev
    ```
 
-4. Build for production:
+4. Build production bundle:
    ```bash
    npm run build
    ```
 
+---
+
 ## 🧪 Testing
 
-The project maintains a professional test suite located in the `/tests` directory.
+The project is protected by a solid unit and integration testing suite located in the `/tests` folder.
 
+To run the Vitest suite:
 ```bash
 npm test
 ```
 
-## 📱 Mobile Layout
+To perform a Svelte type check:
+```bash
+npm run check
+```
 
-Designed specifically for mobile ergonomics. Features large hitboxes (min 44x44px), safe-area awareness for notches, and dynamic scaling for all screen sizes.
+---
 
 ## ❤️ Support the Project
 
