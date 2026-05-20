@@ -4,7 +4,7 @@
   import Timer from './lib/components/Timer.svelte';
   import Success from './lib/components/Success.svelte';
   import PresetManager from './lib/components/PresetManager.svelte';
-  import { sessionStore, presetsStore, settingsStore } from './lib/store';
+  import { sessionStore, presetsStore, settingsStore, wakeLockActive } from './lib/store';
   import type { Preset } from './lib/types';
   import { requestWakeLock, type WakeLockSentinel } from './lib/wakeLock';
 
@@ -41,6 +41,14 @@
         try { lock.release(); } catch { /* ignore */ }
       }
       lock = await requestWakeLock();
+      if (lock) {
+        wakeLockActive.set(true);
+        lock.onrelease = () => {
+          wakeLockActive.set(false);
+        };
+      } else {
+        wakeLockActive.set(false);
+      }
     };
     
     acquireLock();
@@ -53,7 +61,10 @@
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      if (lock) lock.release();
+      if (lock) {
+        try { lock.release(); } catch { /* ignore */ }
+      }
+      wakeLockActive.set(false);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   });

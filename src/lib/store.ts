@@ -46,6 +46,8 @@ export const settingsStore = persistentWritable<Settings>('rep-settings', {
 
 export const presetsStore = persistentWritable<Preset[]>('rep-presets', []);
 
+export const wakeLockActive = writable(false);
+
 export function updateTimer() {
   sessionStore.update(s => {
     if (!s.isResting || s.timeLeft <= 0) return s;

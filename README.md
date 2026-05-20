@@ -144,4 +144,23 @@ If you find this tool helpful, consider supporting its development:
 
 ---
 
+## 🔮 Future Roadmap
+
+To keep this PWA robust, lightweight, and modern, the following features are planned for future releases:
+
+1. **Workout History & Analytics:**
+   - Persistent tracking of completed exercise sessions.
+   - Elegant interactive progress charts, calendar heatmaps, and personal records tracking.
+
+2. **Secure Data Backup & Sync:**
+   - JSON format export/import of all custom presets, session history, and application settings to keep your data safe offline.
+
+3. **Alternative Timer Formats:**
+   - Support for EMOM (Every Minute on the Minute), Tabata, and AMRAP (As Many Rounds As Possible) training protocols.
+
+4. **Customizable Voice Guide & Sounds:**
+   - Multiple professional vocal cues and guide tones for rep milestones and transitions, fully toggleable in preferences.
+
+---
+
 Made with ❤️ by [Murqin](https://github.com/Murqin)

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { presetsStore, sessionStore, settingsStore } from '../store';
+  import { presetsStore, sessionStore, settingsStore, wakeLockActive } from '../store';
   import type { Preset } from '../types';
   import { fade, fly } from 'svelte/transition';
 
@@ -149,6 +149,26 @@
         >
           <div class="absolute top-1 left-1 w-4 h-4 rounded-full transition-transform {$settingsStore.enableFeedback ? 'translate-x-6 bg-[var(--bg-color)]' : 'translate-x-0 bg-gray-500'}"></div>
         </button>
+      </div>
+
+      <div class="flex items-center justify-between p-4 rounded-xl border border-[var(--text-color)]/5 bg-[var(--text-color)]/[0.02]">
+        <div>
+          <div class="text-sm font-medium">Screen Wake Lock</div>
+          <div class="text-[10px] text-gray-500 mt-0.5">Prevents screen from turning off</div>
+        </div>
+        <div class="flex items-center gap-2">
+          {#if $wakeLockActive}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Active
+            </span>
+          {:else}
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-500/10 text-gray-400 border border-gray-500/20">
+              <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+              Inactive
+            </span>
+          {/if}
+        </div>
       </div>
     </div>
 
