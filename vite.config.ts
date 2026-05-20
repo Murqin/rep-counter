@@ -12,7 +12,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['icon.svg', 'icon-192.png', 'icon-512.png'],
+      includeAssets: ['icon.svg', 'icon-192.png', 'icon-512.png', 'screenshots/1.png', 'screenshots/2.png', 'screenshots/3.png', 'screenshots/4.png', 'screenshots/desktop.jpg'],
       manifest: {
         name: 'Rep Counter',
         short_name: 'RepCount',
@@ -55,9 +55,46 @@ export default defineConfig({
             purpose: 'any',
           },
         ],
+        screenshots: [
+          {
+            src: '/screenshots/1.png',
+            sizes: '1290x2220',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Rep Counter - Active Workout'
+          },
+          {
+            src: '/screenshots/2.png',
+            sizes: '1290x2220',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Rep Counter - Timer Rest Period'
+          },
+          {
+            src: '/screenshots/3.png',
+            sizes: '1290x2220',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Rep Counter - Success Screen'
+          },
+          {
+            src: '/screenshots/4.png',
+            sizes: '1290x2220',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Rep Counter - Preset Manager'
+          },
+          {
+            src: '/screenshots/desktop.jpg',
+            sizes: '1024x1024',
+            type: 'image/jpeg',
+            form_factor: 'wide',
+            label: 'Rep Counter - Desktop View'
+          }
+        ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff,woff2}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
