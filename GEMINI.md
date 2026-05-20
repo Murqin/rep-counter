@@ -22,6 +22,11 @@
 - **Transitions:** Use `isTransitioning` state in `sessionStore` to provide a 600ms visual pause when completing rounds with 0s rest.
 - **Accessibility:** Minimum hitbox 44x44px. Use semantic `<button>`.
 
+### 4. Screen Wake Lock Management
+- **Wake Lock State:** Managed reactively using the `wakeLockActive` writable store.
+- **Acquisition & Release:** `App.svelte` requests a Screen Wake Lock sentinel on mount and visibility changes. It automatically binds `lock.onrelease` to toggle `wakeLockActive` state, ensuring zero ghost locks.
+- **Visual Status Badge:** The Settings overlay (`PresetManager.svelte`) reads `wakeLockActive` to display a pulsing Active/Inactive state indicator badge.
+
 ## File Structure
 - **/src:** Source code.
 - **/tests:** All Vitest tests, mirroring the `src/` hierarchy.
