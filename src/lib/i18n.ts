@@ -124,7 +124,17 @@ export const translations = {
   }
 };
 
-// Derived store to reactive $t translator function
+// Native display names for each supported language code
+export const languageNames: Record<string, string> = {
+  en: 'English',
+  tr: 'Türkçe'
+};
+
+// All supported language codes, automatically derived from the translations object.
+// Adding a new language block to translations is enough — no UI changes needed.
+export const availableLanguages = Object.keys(translations);
+
+// Derived store that returns a reactive $t translator function
 export const t = derived(settingsStore, ($settings) => {
   const lang = $settings.lang || 'en';
   return (key: keyof typeof translations['en']) => {

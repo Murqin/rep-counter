@@ -144,26 +144,23 @@ describe('PresetManager Component', () => {
   it('renders language option row and toggles language successfully', async () => {
     // Start in English
     settingsStore.set({ autoAdvance: true, theme: 'dark', enableFeedback: true, lang: 'en' });
-    const { getByText, queryByText } = render(PresetManager, { onclose: vi.fn() });
+    const { getByLabelText, getByText, queryByText } = render(PresetManager, { onclose: vi.fn() });
     
-    // Ensure English UI elements are rendered
+    // Ensure English UI is rendered
     expect(getByText('Settings')).toBeTruthy();
-    expect(getByText('English')).toBeTruthy();
-    expect(queryByText('Ayarlar')).toBeNull();
 
-    // Click Language toggle button
-    const langButton = getByText('English');
-    await fireEvent.click(langButton);
+    // Change language via select element
+    const langSelect = document.getElementById('lang-select') as HTMLSelectElement;
+    await fireEvent.change(langSelect, { target: { value: 'tr' } });
 
-    // Ensure state updated to Turkish
+    // Ensure store updated to Turkish
     let currentSettings: any;
     settingsStore.subscribe(s => currentSettings = s)();
     expect(currentSettings.lang).toBe('tr');
 
-    // UI should reactively shift to Turkish
+    // UI should reactively shift to Turkish labels
     await tick();
     expect(getByText('Ayarlar')).toBeTruthy();
-    expect(getByText('Türkçe')).toBeTruthy();
     expect(queryByText('Settings')).toBeNull();
   });
 });

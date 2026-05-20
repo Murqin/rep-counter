@@ -1,6 +1,6 @@
 <script lang="ts">
   import { presetsStore, sessionStore, settingsStore, wakeLockActive } from '../store';
-  import { t } from '../i18n';
+  import { t, availableLanguages, languageNames } from '../i18n';
   import type { Preset } from '../types';
   import { fade, fly } from 'svelte/transition';
 
@@ -101,8 +101,9 @@
     settingsStore.update(s => ({ ...s, enableFeedback: !s.enableFeedback }));
   }
 
-  function toggleLang() {
-    settingsStore.update(s => ({ ...s, lang: s.lang === 'tr' ? 'en' : 'tr' }));
+  function setLang(e: Event) {
+    const lang = (e.currentTarget as HTMLSelectElement).value as 'en' | 'tr';
+    settingsStore.update(s => ({ ...s, lang }));
   }
 </script>
 
@@ -178,14 +179,22 @@
 
       <!-- Language Selector -->
       <div class="flex items-center justify-between p-4 rounded-xl border border-[var(--text-color)]/5 bg-[var(--text-color)]/[0.02]">
-        <div class="text-sm font-medium">{$t('language')}</div>
-        <button 
-          onclick={toggleLang}
-          class="flex items-center gap-2 px-4 py-2 bg-[var(--text-color)]/5 hover:bg-[var(--text-color)]/10 rounded-lg transition-colors text-xs font-bold uppercase tracking-wider border border-[var(--text-color)]/10"
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <div class="text-sm font-medium">{$t('language')}</div>
+        </div>
+        <select
+          id="lang-select"
+          value={$settingsStore.lang}
+          onchange={setLang}
+          class="bg-[var(--text-color)]/5 hover:bg-[var(--text-color)]/10 border border-[var(--text-color)]/10 rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider text-[var(--text-color)] cursor-pointer focus:outline-none focus:border-[var(--text-color)]/30 transition-colors appearance-none"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-          {$settingsStore.lang === 'tr' ? $t('turkish') : $t('english')}
-        </button>
+          {#each availableLanguages as code}
+            <option value={code} style="background: var(--bg-color); color: var(--text-color);">
+              {languageNames[code] ?? code}
+            </option>
+          {/each}
+        </select>
       </div>
     </div>
 

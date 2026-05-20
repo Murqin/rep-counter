@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { get } from 'svelte/store';
 import { settingsStore } from '../../src/lib/store';
-import { t, translations } from '../../src/lib/i18n';
+import { t, translations, availableLanguages, languageNames } from '../../src/lib/i18n';
 
 describe('i18n localization system', () => {
   beforeEach(() => {
@@ -51,5 +51,21 @@ describe('i18n localization system', () => {
     const translate = get(t);
     // @ts-ignore
     expect(translate('nonExistentKey')).toBe('nonExistentKey');
+  });
+
+  it('availableLanguages is derived automatically from the translations object', () => {
+    // Must contain exactly the keys defined in translations
+    expect(availableLanguages).toContain('en');
+    expect(availableLanguages).toContain('tr');
+    expect(availableLanguages.length).toBe(Object.keys(translations).length);
+  });
+
+  it('languageNames provides a human-readable display name for each language code', () => {
+    expect(languageNames['en']).toBe('English');
+    expect(languageNames['tr']).toBe('Türkçe');
+    // Every available language should have a display name entry
+    availableLanguages.forEach(code => {
+      expect(languageNames[code]).toBeTruthy();
+    });
   });
 });
