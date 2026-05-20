@@ -1,0 +1,58 @@
+{
+  "__meta__": {
+    "description": "Rep Counter Translation Template. Copy this file, rename it to your target language code (e.g. 'es.json'), fill in the values, and submit a PR or issue to contribute!",
+    "contributor": "Your Name / GitHub Profile"
+  },
+  "settings": "Settings",
+  "preferences": "Preferences",
+  "theme": "Theme",
+  "dark": "Dark",
+  "light": "Light",
+  "soundHaptics": "Sound & Haptics",
+  "screenWakeLock": "Screen Wake Lock",
+  "wakeLockDescription": "Prevents screen from turning off",
+  "active": "Active",
+  "inactive": "Inactive",
+  "presets": "Presets",
+  "rounds": "rounds",
+  "reps": "reps",
+  "break": "s break",
+  "editPreset": "Edit Preset",
+  "newPreset": "New Preset",
+  "cancelEdit": "Cancel Edit",
+  "name": "Name",
+  "routineNamePlaceholder": "Routine name...",
+  "roundsLabel": "Rounds",
+  "repsLabel": "Reps",
+  "breakLabel": "Break (s)",
+  "saveChanges": "Save Changes",
+  "createPreset": "Create Preset",
+  "supportCommunity": "Support & Community",
+  "enjoyApp": "If you enjoy this app, consider supporting it by giving a star on GitHub!",
+  "buyMeCoffee": "Buy Me a Coffee",
+  "starOnGithub": "Star on GitHub",
+  "reportBug": "Report a Bug",
+  "version": "Rep Counter v1.0.0",
+  
+  "sessionComplete": "Session Complete",
+  "reachedGoal": "You've reached your goal",
+  "restartPreset": "RESTART PRESET",
+  "backToMenu": "BACK TO MENU",
+  
+  "breakTime": "BREAK",
+  "skipBreak": "SKIP BREAK",
+  
+  "targetReps": "Target Reps",
+  "breakTimeSeconds": "Break Time (s)",
+  "totalRounds": "Total Rounds",
+  "done": "DONE",
+  
+  "round": "Round",
+  "targetRepsHeader": "TARGET REPS",
+  "finishRound": "FINISH ROUND",
+  "nextRound": "NEXT ROUND",
+  
+  "language": "Language",
+  "turkish": "Turkish",
+  "english": "English"
+}

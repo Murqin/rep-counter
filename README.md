@@ -1,3 +1,7 @@
+🌍 **Translations:** [English](README.md) | [Türkçe](README.tr.md)
+
+---
+
 # Rep Counter ⚡
 
 A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zero distractions. Built with **Svelte 5** and **Tailwind CSS v4**.

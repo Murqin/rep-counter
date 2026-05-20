@@ -23,8 +23,21 @@ vi.mock('../../../src/lib/store', () => {
     set: vi.fn()
   };
 
+  const mockSettings = {
+    subscribe: (fn: any) => {
+      fn({
+        autoAdvance: true,
+        theme: 'dark',
+        enableFeedback: true,
+        lang: 'en'
+      });
+      return () => {};
+    }
+  };
+
   return {
     sessionStore: mockStore,
+    settingsStore: mockSettings,
     endRest: vi.fn(),
     updateTimer: vi.fn()
   };

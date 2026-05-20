@@ -1,5 +1,6 @@
 <script lang="ts">
   import { presetsStore, sessionStore, settingsStore, wakeLockActive } from '../store';
+  import { t } from '../i18n';
   import type { Preset } from '../types';
   import { fade, fly } from 'svelte/transition';
 
@@ -99,6 +100,10 @@
   function toggleFeedback() {
     settingsStore.update(s => ({ ...s, enableFeedback: !s.enableFeedback }));
   }
+
+  function toggleLang() {
+    settingsStore.update(s => ({ ...s, lang: s.lang === 'tr' ? 'en' : 'tr' }));
+  }
 </script>
 
 <div 
@@ -110,7 +115,7 @@
     class="w-full max-w-lg bg-[var(--bg-color)] border border-[var(--text-color)]/10 rounded-3xl p-6 md:p-8 space-y-8 shadow-2xl relative mb-8"
   >
     <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-light tracking-tight">Settings</h2>
+      <h2 class="text-2xl font-light tracking-tight">{$t('settings')}</h2>
       <button 
         onclick={onclose}
         class="p-2 hover:bg-[var(--text-color)]/5 rounded-full transition-colors"
@@ -122,26 +127,26 @@
 
     <!-- App Settings -->
     <div class="space-y-4">
-      <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Preferences</h3>
+      <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest">{$t('preferences')}</h3>
       
       <div class="flex items-center justify-between p-4 rounded-xl border border-[var(--text-color)]/5 bg-[var(--text-color)]/[0.02]">
-        <div class="text-sm font-medium">Theme</div>
+        <div class="text-sm font-medium">{$t('theme')}</div>
         <button 
           onclick={toggleTheme}
           class="flex items-center gap-2 px-4 py-2 bg-[var(--text-color)]/5 hover:bg-[var(--text-color)]/10 rounded-lg transition-colors text-xs font-bold uppercase tracking-wider border border-[var(--text-color)]/10"
         >
           {#if $settingsStore.theme === 'dark'}
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            Dark
+            {$t('dark')}
           {:else}
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            Light
+            {$t('light')}
           {/if}
         </button>
       </div>
 
       <div class="flex items-center justify-between p-4 rounded-xl border border-[var(--text-color)]/5 bg-[var(--text-color)]/[0.02]">
-        <div class="text-sm font-medium">Sound & Haptics</div>
+        <div class="text-sm font-medium">{$t('soundHaptics')}</div>
         <button 
           onclick={toggleFeedback}
           aria-label="Toggle Feedback"
@@ -153,28 +158,40 @@
 
       <div class="flex items-center justify-between p-4 rounded-xl border border-[var(--text-color)]/5 bg-[var(--text-color)]/[0.02]">
         <div>
-          <div class="text-sm font-medium">Screen Wake Lock</div>
-          <div class="text-[10px] text-gray-500 mt-0.5">Prevents screen from turning off</div>
+          <div class="text-sm font-medium">{$t('screenWakeLock')}</div>
+          <div class="text-[10px] text-gray-500 mt-0.5">{$t('wakeLockDescription')}</div>
         </div>
         <div class="flex items-center gap-2">
           {#if $wakeLockActive}
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              Active
+              {$t('active')}
             </span>
           {:else}
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-500/10 text-gray-400 border border-gray-500/20">
               <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
-              Inactive
+              {$t('inactive')}
             </span>
           {/if}
         </div>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="flex items-center justify-between p-4 rounded-xl border border-[var(--text-color)]/5 bg-[var(--text-color)]/[0.02]">
+        <div class="text-sm font-medium">{$t('language')}</div>
+        <button 
+          onclick={toggleLang}
+          class="flex items-center gap-2 px-4 py-2 bg-[var(--text-color)]/5 hover:bg-[var(--text-color)]/10 rounded-lg transition-colors text-xs font-bold uppercase tracking-wider border border-[var(--text-color)]/10"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          {$settingsStore.lang === 'tr' ? $t('turkish') : $t('english')}
+        </button>
       </div>
     </div>
 
     <!-- Preset List -->
     <div class="space-y-4">
-      <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Presets</h3>
+      <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest">{$t('presets')}</h3>
       <div class="space-y-3">
         {#each $presetsStore as preset (preset.id)}
           <div 
@@ -187,7 +204,7 @@
             <div class="text-left">
               <div class="font-medium">{preset.name}</div>
               <div class="text-xs text-gray-500 uppercase tracking-widest mt-1">
-                {preset.rounds} rounds • {preset.repsPerRound} reps • {preset.breakDuration}s break
+                {preset.rounds} {$t('rounds')} • {preset.repsPerRound} {$t('reps')} • {preset.breakDuration}{$t('break')}
               </div>
             </div>
             <div class="flex items-center gap-2">
@@ -218,30 +235,30 @@
     <div id="preset-form" class="pt-6 border-t border-[var(--text-color)]/5 space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest">
-          {editingId ? 'Edit Preset' : 'New Preset'}
+          {editingId ? $t('editPreset') : $t('newPreset')}
         </h3>
         {#if editingId}
           <button 
             onclick={resetForm}
             class="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-[var(--text-color)]"
           >
-            Cancel Edit
+            {$t('cancelEdit')}
           </button>
         {/if}
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="col-span-2 space-y-1.5">
-          <label for="preset-name" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">Name</label>
+          <label for="preset-name" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('name')}</label>
           <input 
             id="preset-name"
             type="text" 
             bind:value={newName} 
-            placeholder="Routine name..." 
+            placeholder={$t('routineNamePlaceholder')} 
             class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
           />
         </div>
         <div class="space-y-1.5">
-          <label for="preset-rounds" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">Rounds</label>
+          <label for="preset-rounds" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('roundsLabel')}</label>
           <input 
             id="preset-rounds"
             type="number"
@@ -251,7 +268,7 @@
           />
         </div>
         <div class="space-y-1.5">
-          <label for="preset-reps" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">Reps</label>
+          <label for="preset-reps" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('repsLabel')}</label>
           <input 
             id="preset-reps"
             type="number"
@@ -261,7 +278,7 @@
           />
         </div>
         <div class="space-y-1.5">
-          <label for="preset-break" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">Break (s)</label>
+          <label for="preset-break" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('breakLabel')}</label>
           <input 
             id="preset-break"
             type="number"
@@ -276,15 +293,15 @@
         disabled={!newName.trim()}
         class="w-full bg-[var(--text-color)] text-[var(--bg-color)] font-medium py-3 rounded-xl hover:opacity-90 disabled:opacity-50 disabled:hover:opacity-50 transition-all mt-2"
       >
-        {editingId ? 'Save Changes' : 'Create Preset'}
+        {editingId ? $t('saveChanges') : $t('createPreset')}
       </button>
     </div>
 
     <!-- Community Section -->
     <div class="pt-8 border-t border-[var(--text-color)]/5 space-y-6">
       <div class="text-center space-y-2">
-        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Support & Community</h3>
-        <p class="text-xs text-gray-600 px-4">If you enjoy this app, consider supporting it by giving a star on GitHub!</p>
+        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest">{$t('supportCommunity')}</h3>
+        <p class="text-xs text-gray-600 px-4">{$t('enjoyApp')}</p>
       </div>
       
       <div class="flex flex-col gap-3">
@@ -295,7 +312,7 @@
           class="flex items-center justify-center gap-3 w-full bg-[#FFDD00] hover:bg-[#FFCC00] text-black py-3.5 rounded-xl transition-all font-bold group shadow-lg"
         >
           <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy Me A Coffee" class="w-5 h-5" />
-          Buy Me a Coffee
+          {$t('buyMeCoffee')}
         </a>
 
         <a 
@@ -305,7 +322,7 @@
           class="flex items-center justify-center gap-3 w-full bg-[#161b22] hover:bg-[#1f242c] text-white py-3.5 rounded-xl transition-all font-medium border border-white/5 group"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-yellow-400 transition-colors"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-          Star on GitHub
+          {$t('starOnGithub')}
         </a>
         
         <a 
@@ -314,12 +331,12 @@
           rel="noopener noreferrer"
           class="flex items-center justify-center gap-3 w-full bg-[var(--text-color)]/5 hover:bg-[var(--text-color)]/10 text-gray-400 hover:text-[var(--text-color)] py-3 rounded-xl transition-all text-xs font-bold uppercase tracking-widest"
         >
-          Report a Bug
+          {$t('reportBug')}
         </a>
       </div>
       
       <div class="text-[10px] text-gray-700 text-center font-bold tracking-widest uppercase pb-4">
-        Rep Counter v1.0.0
+        {$t('version')}
       </div>
     </div>
   </div>

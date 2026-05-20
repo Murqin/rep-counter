@@ -22,4 +22,5 @@ export type Settings = {
   autoAdvance: boolean;
   theme: 'dark' | 'light';
   enableFeedback: boolean;
+  lang: 'en' | 'tr';
 };

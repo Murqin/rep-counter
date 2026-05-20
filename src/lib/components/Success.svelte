@@ -1,5 +1,6 @@
 <script lang="ts">
   import { sessionStore } from '../store';
+  import { t } from '../i18n';
   import { fade, scale } from 'svelte/transition';
   
   let { onMenu }: { onMenu: () => void } = $props();
@@ -27,21 +28,21 @@
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--bg-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
   </div>
   
-  <h1 class="text-4xl font-light mb-2 tracking-tight">Session Complete</h1>
-  <p class="text-gray-500 uppercase tracking-widest text-xs mb-16 font-bold">You've reached your goal</p>
+  <h1 class="text-4xl font-light mb-2 tracking-tight">{$t('sessionComplete')}</h1>
+  <p class="text-gray-500 uppercase tracking-widest text-xs mb-16 font-bold">{$t('reachedGoal')}</p>
   
   <div class="space-y-4 w-full max-w-xs">
     <button 
       onclick={restart}
       class="w-full bg-[var(--text-color)] text-[var(--bg-color)] font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity"
     >
-      RESTART PRESET
+      {$t('restartPreset')}
     </button>
     <button 
       onclick={onMenu}
       class="w-full border border-[var(--text-color)]/10 bg-[var(--text-color)]/[0.02] text-[var(--text-color)] font-bold py-4 rounded-2xl hover:bg-[var(--text-color)]/5 transition-colors"
     >
-      BACK TO MENU
+      {$t('backToMenu')}
     </button>
   </div>
 </div>

@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { get } from 'svelte/store';
   import { sessionStore, endRest, updateTimer } from '../store';
+  import { t } from '../i18n';
 
   let { duration }: { duration: number } = $props();
   let interval: ReturnType<typeof setInterval>;
@@ -35,14 +36,14 @@
     class="flex flex-col items-center justify-center rounded-full border border-[var(--text-color)]/10 bg-transparent relative"
     style="height: min(85vw, 65vh, 400px); width: min(85vw, 65vh, 400px); max-height: 400px; max-width: 400px;"
   >
-    <div class="text-[10px] xs:text-sm font-bold tracking-[0.2em] text-gray-500 uppercase mb-2">BREAK</div>
+    <div class="text-[10px] xs:text-sm font-bold tracking-[0.2em] text-gray-500 uppercase mb-2">{$t('breakTime')}</div>
     <div class="text-[6rem] xs:text-[7rem] sm:text-[8rem] font-light tabular-nums tracking-tighter text-[var(--text-color)]">{minutes}:{seconds}</div>
     
     <button 
       class="mt-8 text-[8px] xs:text-[10px] font-bold tracking-[0.2em] text-[var(--text-color)]/30 hover:text-[var(--text-color)] transition-all border border-[var(--text-color)]/10 px-4 xs:px-6 py-2 rounded-full active:scale-95"
       onclick={endRest}
     >
-      SKIP BREAK
+      {$t('skipBreak')}
     </button>
   </div>
 </div>

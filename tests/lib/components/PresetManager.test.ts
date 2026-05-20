@@ -1,8 +1,9 @@
 /** @vitest-environment jsdom */
 import { render, fireEvent } from '@testing-library/svelte';
 import PresetManager from '../../../src/lib/components/PresetManager.svelte';
-import { presetsStore, sessionStore } from '../../../src/lib/store';
+import { presetsStore, sessionStore, settingsStore, wakeLockActive } from '../../../src/lib/store';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { tick } from 'svelte';
 
 describe('PresetManager Component', () => {
   beforeEach(() => {
@@ -126,5 +127,43 @@ describe('PresetManager Component', () => {
     
     expect(queryByText('Cancel Edit')).toBeNull();
     expect(getByText('Create Preset')).toBeTruthy();
+  });
+
+  it('renders the Wake Lock status correctly based on wakeLockActive store', async () => {
+    // 1. Inactive State (Default/False)
+    wakeLockActive.set(false);
+    const { getByText } = render(PresetManager, { onclose: vi.fn() });
+    expect(getByText('Inactive')).toBeTruthy();
+
+    // 2. Active State (True)
+    wakeLockActive.set(true);
+    await tick();
+    expect(getByText('Active')).toBeTruthy();
+  });
+
+  it('renders language option row and toggles language successfully', async () => {
+    // Start in English
+    settingsStore.set({ autoAdvance: true, theme: 'dark', enableFeedback: true, lang: 'en' });
+    const { getByText, queryByText } = render(PresetManager, { onclose: vi.fn() });
+    
+    // Ensure English UI elements are rendered
+    expect(getByText('Settings')).toBeTruthy();
+    expect(getByText('English')).toBeTruthy();
+    expect(queryByText('Ayarlar')).toBeNull();
+
+    // Click Language toggle button
+    const langButton = getByText('English');
+    await fireEvent.click(langButton);
+
+    // Ensure state updated to Turkish
+    let currentSettings: any;
+    settingsStore.subscribe(s => currentSettings = s)();
+    expect(currentSettings.lang).toBe('tr');
+
+    // UI should reactively shift to Turkish
+    await tick();
+    expect(getByText('Ayarlar')).toBeTruthy();
+    expect(getByText('Türkçe')).toBeTruthy();
+    expect(queryByText('Settings')).toBeNull();
   });
 });

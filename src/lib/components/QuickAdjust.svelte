@@ -1,6 +1,7 @@
 <!-- src/lib/components/QuickAdjust.svelte -->
 <script lang="ts">
   import { sessionStore } from '../store';
+  import { t } from '../i18n';
   import { fade, fly } from 'svelte/transition';
 
   let { onclose, targetReps, onUpdateTarget, restDuration, onUpdateRest }: { 
@@ -29,7 +30,7 @@
     <div class="space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Target Reps</div>
+          <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{$t('targetReps')}</div>
           <div class="text-3xl font-light text-[var(--text-color)]">{targetReps}</div>
         </div>
         <div class="flex gap-4">
@@ -46,7 +47,7 @@
 
       <div class="flex items-center justify-between">
         <div>
-          <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Break Time (s)</div>
+          <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{$t('breakTimeSeconds')}</div>
           <div class="text-3xl font-light text-[var(--text-color)]">{restDuration}</div>
         </div>
         <div class="flex gap-4">
@@ -63,7 +64,7 @@
 
       <div class="flex items-center justify-between">
         <div>
-          <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Total Rounds</div>
+          <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{$t('totalRounds')}</div>
           <div class="text-3xl font-light text-[var(--text-color)]">{$sessionStore.totalRounds}</div>
         </div>
         <div class="flex gap-4">
@@ -86,7 +87,7 @@
       onclick={onclose}
       class="w-full bg-[var(--text-color)] text-[var(--bg-color)] font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity"
     >
-      DONE
+      {$t('done')}
     </button>
   </div>
 </div>

@@ -41,7 +41,8 @@ export const sessionStore = persistentWritable<SessionState>('rep-session', {
 export const settingsStore = persistentWritable<Settings>('rep-settings', {
   autoAdvance: true,
   theme: 'dark',
-  enableFeedback: true
+  enableFeedback: true,
+  lang: typeof navigator !== 'undefined' && navigator.language.startsWith('tr') ? 'tr' : 'en'
 });
 
 export const presetsStore = persistentWritable<Preset[]>('rep-presets', []);
