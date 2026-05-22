@@ -40,6 +40,8 @@ export const translations = {
     reachedGoal: "You've reached your goal",
     restartPreset: 'RESTART PRESET',
     backToMenu: 'BACK TO MENU',
+    adjustScore: 'Adjust Score',
+    totalReps: 'Total Reps',
     
     // Timer Screen
     breakTime: 'BREAK',
@@ -114,6 +116,8 @@ export const translations = {
     reachedGoal: 'Hedefinize ulaştınız',
     restartPreset: 'PROGRAMI YENİDEN BAŞLAT',
     backToMenu: 'MENÜYE DÖN',
+    adjustScore: 'Skoru Düzenle',
+    totalReps: 'Toplam Tekrar',
     
     // Timer Screen
     breakTime: 'MOLA',
