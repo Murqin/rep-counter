@@ -345,16 +345,18 @@
           </div>
         {/if}
 
-        <div class="space-y-1.5 {newType === 'amrap' ? 'col-span-2' : ''}">
-          <label for="preset-reps" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('repsLabel')}</label>
-          <input 
-            id="preset-reps"
-            type="number"
-            min="1"
-            bind:value={newReps} 
-            class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
-          />
-        </div>
+        {#if newType !== 'tabata'}
+          <div class="space-y-1.5 {newType === 'amrap' ? 'col-span-2' : ''}">
+            <label for="preset-reps" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('repsLabel')}</label>
+            <input 
+              id="preset-reps"
+              type="number"
+              min="1"
+              bind:value={newReps} 
+              class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
+            />
+          </div>
+        {/if}
 
         {#if newType === 'classic'}
           <div class="col-span-2 space-y-1.5">
