@@ -259,7 +259,7 @@ export function incrementClassicRep(targetReps: number, autoAdvance: boolean, br
 
     let nextRep = s.currentRep + 1;
     let nextRound = s.currentRound;
-    let isResting = s.isResting;
+    let isResting: boolean = s.isResting;
     let isTransitioning = false;
     let timeLeft = s.timeLeft;
     let lastTick = s.lastTick;
@@ -292,7 +292,7 @@ export function incrementEmomRep(targetReps: number) {
     if (s.isTransitioning || s.isResting) return s;
 
     let nextRep = s.currentRep + 1;
-    let isResting = s.isResting;
+    let isResting: boolean = s.isResting;
 
     if (nextRep >= targetReps) {
       feedbackSuccess();
@@ -457,7 +457,7 @@ export function completeClassicSet(targetReps: number, autoAdvance: boolean, bre
     feedbackSuccess();
 
     let nextRound = s.currentRound;
-    let isResting = s.isResting;
+    let isResting: boolean = s.isResting;
     let isTransitioning = false;
     let timeLeft = s.timeLeft;
     let lastTick = s.lastTick;
