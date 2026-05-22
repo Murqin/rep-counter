@@ -159,8 +159,8 @@ To keep this PWA robust, lightweight, and modern, the following features are pla
 2. **Secure Data Backup & Sync:**
    - JSON format export/import of all custom presets, session history, and application settings to keep your data safe offline.
 
-3. **Alternative Timer Formats:**
-   - Support for EMOM (Every Minute on the Minute), Tabata, and AMRAP (As Many Rounds As Possible) training protocols.
+3. ~~**Alternative Timer Formats:**~~ **(Beta)**
+   - ~~Support for EMOM (Every Minute on the Minute), Tabata, and AMRAP (As Many Rounds As Possible) training protocols.~~
 
 4. **Customizable Voice Guide & Sounds:**
    - Multiple professional vocal cues and guide tones for rep milestones and transitions, fully toggleable in preferences.

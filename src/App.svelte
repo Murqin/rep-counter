@@ -4,9 +4,10 @@
   import Timer from './lib/components/Timer.svelte';
   import Success from './lib/components/Success.svelte';
   import PresetManager from './lib/components/PresetManager.svelte';
-  import { sessionStore, presetsStore, settingsStore, wakeLockActive } from './lib/store';
+  import { sessionStore, presetsStore, settingsStore, wakeLockActive, updateTimer } from './lib/store';
   import type { Preset } from './lib/types';
   import { requestWakeLock, type WakeLockSentinel } from './lib/wakeLock';
+  import { get } from 'svelte/store';
 
   const defaultPreset: Preset = {
     id: 'default',
@@ -32,6 +33,16 @@
         totalRounds: defaultPreset.rounds
       }));
     }
+
+    // Centralized Ticker
+    const ticker = setInterval(() => {
+      const s = get(sessionStore);
+      const type = s.workoutType || 'classic';
+      const shouldTick = type === 'classic' ? (s.isResting && s.timeLeft > 0) : (s.timeLeft > 0);
+      if (shouldTick) {
+        updateTimer();
+      }
+    }, 1000);
 
     // Wake Lock Logic
     let lock: WakeLockSentinel | null = null;
@@ -61,6 +72,7 @@
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      clearInterval(ticker);
       if (lock) {
         try { lock.release(); } catch { /* ignore */ }
       }
@@ -105,7 +117,7 @@
       <div class="absolute inset-0">
         <Success onMenu={() => isSettingsOpen = true} />
       </div>
-    {:else if $sessionStore.isResting && currentBreakDuration > 0}
+    {:else if $sessionStore.isResting && currentBreakDuration > 0 && ($sessionStore.workoutType === 'classic' || !$sessionStore.workoutType)}
       <div class="absolute inset-0">
         <Timer duration={currentBreakDuration} />
       </div>

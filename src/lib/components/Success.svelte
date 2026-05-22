@@ -1,19 +1,38 @@
+<!-- src/lib/components/Success.svelte -->
 <script lang="ts">
-  import { sessionStore } from '../store';
+  import { sessionStore, presetsStore } from '../store';
   import { t } from '../i18n';
   import { fade, scale } from 'svelte/transition';
   
   let { onMenu }: { onMenu: () => void } = $props();
 
   function restart() {
-    sessionStore.update(s => ({ 
-      ...s, 
-      currentRound: 1, 
-      currentRep: 0, 
+    const s = $sessionStore;
+    const presets = $presetsStore;
+    const preset = presets.find(p => p.id === s.activePresetId);
+    
+    const workoutType = s.workoutType || 'classic';
+    const totalRounds = workoutType === 'amrap' ? 999 : (preset?.rounds ?? 5);
+    const initialTime = workoutType === 'amrap' 
+      ? (preset?.amrapDuration ?? 600)
+      : (workoutType === 'emom'
+          ? (preset?.emomInterval ?? 60)
+          : (workoutType === 'tabata'
+              ? (preset?.workDuration ?? 20)
+              : 0
+            )
+        );
+
+    sessionStore.set({
+      ...s,
+      currentRound: 1,
+      currentRep: 0,
       isResting: false,
-      timeLeft: 0,
-      lastTick: null
-    }));
+      isTransitioning: false,
+      timeLeft: initialTime,
+      lastTick: workoutType !== 'classic' ? Date.now() : null,
+      amrapRoundsCompleted: 0
+    });
   }
 </script>
 
@@ -29,18 +48,30 @@
   </div>
   
   <h1 class="text-4xl font-light mb-2 tracking-tight">{$t('sessionComplete')}</h1>
-  <p class="text-gray-500 uppercase tracking-widest text-xs mb-16 font-bold">{$t('reachedGoal')}</p>
+  <p class="text-gray-500 uppercase tracking-widest text-xs mb-8 font-bold">{$t('reachedGoal')}</p>
+
+  {#if $sessionStore.workoutType === 'amrap'}
+    <div class="mb-12 p-6 rounded-2xl bg-[var(--text-color)]/[0.02] border border-[var(--text-color)]/5 max-w-xs w-full">
+      <div class="text-[10px] xs:text-xs font-bold text-cyan-500 uppercase tracking-widest mb-2">{$t('roundsCompleted')}</div>
+      <div class="text-3xl xs:text-4xl font-extrabold tracking-tight text-white mb-1">
+        {$sessionStore.amrapRoundsCompleted} {$t('rounds')}
+      </div>
+      <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+        + {$sessionStore.currentRep} {$t('reps')}
+      </div>
+    </div>
+  {/if}
   
-  <div class="space-y-4 w-full max-w-xs">
+  <div class="space-y-4 w-full max-w-xs z-10">
     <button 
       onclick={restart}
-      class="w-full bg-[var(--text-color)] text-[var(--bg-color)] font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity"
+      class="w-full bg-[var(--text-color)] text-[var(--bg-color)] font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity cursor-pointer"
     >
       {$t('restartPreset')}
     </button>
     <button 
       onclick={onMenu}
-      class="w-full border border-[var(--text-color)]/10 bg-[var(--text-color)]/[0.02] text-[var(--text-color)] font-bold py-4 rounded-2xl hover:bg-[var(--text-color)]/5 transition-colors"
+      class="w-full border border-[var(--text-color)]/10 bg-[var(--text-color)]/[0.02] text-[var(--text-color)] font-bold py-4 rounded-2xl hover:bg-[var(--text-color)]/5 transition-colors cursor-pointer"
     >
       {$t('backToMenu')}
     </button>

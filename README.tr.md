@@ -159,8 +159,8 @@ Bu PWA uygulamasını dayanıklı, hafif ve modern tutmak için gelecek sürüml
 2. **Güvenli Veri Yedekleme ve Senkronizasyon:**
    - Verilerinizi çevrimdışı güvende tutmak için tüm özel programların, seans geçmişinin ve uygulama ayarlarının JSON formatında dışa/içe aktarılması.
 
-3. **Alternatif Zamanlayıcı Formatları:**
-   - EMOM (Every Minute on the Minute), Tabata ve AMRAP (As Many Rounds As Possible) antrenman protokolleri desteği.
+3. ~~**Alternatif Zamanlayıcı Formatları:**~~ **(Beta)**
+   - ~~EMOM (Every Minute on the Minute), Tabata ve AMRAP (As Many Rounds As Possible) antrenman protokolleri desteği.~~
 
 4. **Özelleştirilebilir Sesli Rehber ve Sesler:**
    - Tekrar dönüm noktaları ve geçişler için birden fazla profesyonel sesli ipucu ve rehber tonları, ayarlardan tamamen açılıp kapatılabilir.

@@ -1,47 +1,67 @@
 <script lang="ts">
   import { presetsStore, sessionStore, settingsStore, wakeLockActive, sanitizeName } from '../store';
   import { t, availableLanguages, languageNames } from '../i18n';
-  import type { Preset } from '../types';
+  import type { Preset, PresetType } from '../types';
   import { fade, fly } from 'svelte/transition';
 
   let { onclose }: { onclose: () => void } = $props();
 
   let newName = $state('');
+  let newType = $state<PresetType>('classic');
   let newRounds = $state(5);
   let newReps = $state(10);
   let newBreak = $state(30);
+  let newWork = $state(20);
+  let newEmomInterval = $state(60);
+  let newAmrapDuration = $state(600); // 10 minutes default
   let editingId = $state<string | null>(null);
 
   function resetForm() {
     editingId = null;
     newName = '';
+    newType = 'classic';
     newRounds = 5;
     newReps = 10;
     newBreak = 30;
+    newWork = 20;
+    newEmomInterval = 60;
+    newAmrapDuration = 600;
   }
 
   function savePreset() {
     if (!newName.trim()) return;
-    // Bug #10: Validate numeric bounds
-    if (newRounds < 1 || newReps < 1 || newBreak < 0) return;
+    if (newRounds < 1 || newReps < 1 || newBreak < 0 || newWork < 1 || newEmomInterval < 1 || newAmrapDuration < 1) return;
     
-    // Security F-1: Sanitize name before saving
     const safeName = sanitizeName(newName);
     if (!safeName) return;
     
     if (editingId) {
       presetsStore.update(p => p.map(preset => 
         preset.id === editingId 
-          ? { ...preset, name: safeName, rounds: newRounds, repsPerRound: newReps, breakDuration: newBreak }
+          ? { 
+              ...preset, 
+              name: safeName, 
+              type: newType,
+              rounds: newType === 'amrap' ? 999 : newRounds, 
+              repsPerRound: newReps, 
+              breakDuration: newBreak,
+              workDuration: newWork,
+              emomInterval: newEmomInterval,
+              amrapDuration: newAmrapDuration
+            }
           : preset
       ));
     } else {
       const newPreset: Preset = {
         id: crypto.randomUUID(),
         name: safeName,
-        rounds: newRounds,
+        type: newType,
+        rounds: newType === 'amrap' ? 999 : newRounds,
         repsPerRound: newReps,
-        breakDuration: newBreak
+        breakDuration: newBreak,
+        workDuration: newWork,
+        emomInterval: newEmomInterval,
+        amrapDuration: newAmrapDuration
       };
       presetsStore.update(p => [...p, newPreset]);
     }
@@ -53,11 +73,14 @@
     e.stopPropagation();
     editingId = preset.id;
     newName = preset.name;
+    newType = preset.type || 'classic';
     newRounds = preset.rounds;
     newReps = preset.repsPerRound;
     newBreak = preset.breakDuration;
+    newWork = preset.workDuration ?? 20;
+    newEmomInterval = preset.emomInterval ?? 60;
+    newAmrapDuration = preset.amrapDuration ?? 600;
     
-    // Scroll form into view if needed
     const formElement = document.getElementById('preset-form');
     if (formElement) {
       formElement.scrollIntoView({ behavior: 'smooth' });
@@ -65,16 +88,30 @@
   }
 
   function selectPreset(preset: Preset) {
+    const workoutType = preset.type || 'classic';
+    const totalRounds = workoutType === 'amrap' ? 999 : preset.rounds;
+    const initialTime = workoutType === 'amrap' 
+      ? (preset.amrapDuration ?? 600)
+      : (workoutType === 'emom'
+          ? (preset.emomInterval ?? 60)
+          : (workoutType === 'tabata'
+              ? (preset.workDuration ?? 20)
+              : 0
+            )
+        );
+
     sessionStore.update(s => ({
       ...s,
       activePresetId: preset.id,
-      totalRounds: preset.rounds,
+      workoutType,
+      totalRounds,
       currentRound: 1,
       currentRep: 0,
       isResting: false,
-      isTransitioning: false, // Bug #5b: clear any stale transition state
-      timeLeft: 0,
-      lastTick: null
+      isTransitioning: false,
+      timeLeft: initialTime,
+      lastTick: workoutType !== 'classic' ? Date.now() : null,
+      amrapRoundsCompleted: 0
     }));
     onclose();
   }
@@ -83,16 +120,17 @@
     e.stopPropagation();
     presetsStore.update(p => p.filter(preset => preset.id !== id));
     if ($sessionStore.activePresetId === id) {
-      // Bug #5: Reset full session state, not just activePresetId
       sessionStore.update(s => ({
         ...s,
         activePresetId: null,
+        workoutType: 'classic',
         currentRound: 1,
         currentRep: 0,
         isResting: false,
         isTransitioning: false,
         timeLeft: 0,
-        lastTick: null
+        lastTick: null,
+        amrapRoundsCompleted: 0
       }));
     }
   }
@@ -217,7 +255,15 @@
             <div class="text-left">
               <div class="font-medium">{preset.name}</div>
               <div class="text-xs text-gray-500 uppercase tracking-widest mt-1">
-                {preset.rounds} {$t('rounds')} • {preset.repsPerRound} {$t('reps')} • {preset.breakDuration}{$t('break')}
+                {#if (preset.type || 'classic') === 'classic'}
+                  {preset.rounds} {$t('rounds')} • {preset.repsPerRound} {$t('reps')} • {preset.breakDuration}{$t('break')}
+                {:else if preset.type === 'emom'}
+                  EMOM • {preset.rounds} {$t('rounds')} • {preset.repsPerRound} {$t('reps')} • {preset.emomInterval ?? 60}s
+                {:else if preset.type === 'tabata'}
+                  TABATA • {preset.rounds} {$t('rounds')} • {preset.workDuration ?? 20}s / {preset.breakDuration}s
+                {:else if preset.type === 'amrap'}
+                  AMRAP • {Math.floor((preset.amrapDuration ?? 600) / 60)}m • {preset.repsPerRound} {$t('reps')}
+                {/if}
               </div>
             </div>
             <div class="flex items-center gap-2">
@@ -270,17 +316,36 @@
             class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
           />
         </div>
-        <div class="space-y-1.5">
-          <label for="preset-rounds" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('roundsLabel')}</label>
-          <input 
-            id="preset-rounds"
-            type="number"
-            min="1"
-            bind:value={newRounds} 
-            class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
-          />
+        
+        <div class="col-span-2 space-y-1.5">
+          <label for="preset-type" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('workoutType')}</label>
+          <select 
+            id="preset-type"
+            bind:value={newType}
+            class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)] cursor-pointer appearance-none"
+            style="background-color: var(--bg-color);"
+          >
+            <option value="classic" style="background: var(--bg-color); color: var(--text-color);">{$t('classic')}</option>
+            <option value="emom" style="background: var(--bg-color); color: var(--text-color);">{$t('emom')}</option>
+            <option value="tabata" style="background: var(--bg-color); color: var(--text-color);">{$t('tabata')}</option>
+            <option value="amrap" style="background: var(--bg-color); color: var(--text-color);">{$t('amrap')}</option>
+          </select>
         </div>
-        <div class="space-y-1.5">
+
+        {#if newType !== 'amrap'}
+          <div class="space-y-1.5">
+            <label for="preset-rounds" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('roundsLabel')}</label>
+            <input 
+              id="preset-rounds"
+              type="number"
+              min="1"
+              bind:value={newRounds} 
+              class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
+            />
+          </div>
+        {/if}
+
+        <div class="space-y-1.5 {newType === 'amrap' ? 'col-span-2' : ''}">
           <label for="preset-reps" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('repsLabel')}</label>
           <input 
             id="preset-reps"
@@ -290,16 +355,69 @@
             class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
           />
         </div>
-        <div class="space-y-1.5">
-          <label for="preset-break" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('breakLabel')}</label>
-          <input 
-            id="preset-break"
-            type="number"
-            min="0"
-            bind:value={newBreak} 
-            class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
-          />
-        </div>
+
+        {#if newType === 'classic'}
+          <div class="col-span-2 space-y-1.5">
+            <label for="preset-break" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('breakLabel')}</label>
+            <input 
+              id="preset-break"
+              type="number"
+              min="0"
+              bind:value={newBreak} 
+              class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
+            />
+          </div>
+        {/if}
+
+        {#if newType === 'emom'}
+          <div class="col-span-2 space-y-1.5">
+            <label for="preset-emom" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('intervalLabel')}</label>
+            <input 
+              id="preset-emom"
+              type="number"
+              min="1"
+              bind:value={newEmomInterval} 
+              class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
+            />
+          </div>
+        {/if}
+
+        {#if newType === 'tabata'}
+          <div class="space-y-1.5">
+            <label for="preset-work" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('workDurationLabel')}</label>
+            <input 
+              id="preset-work"
+              type="number"
+              min="1"
+              bind:value={newWork} 
+              class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
+            />
+          </div>
+          <div class="space-y-1.5">
+            <label for="preset-tabatabreak" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('breakLabel')}</label>
+            <input 
+              id="preset-tabatabreak"
+              type="number"
+              min="0"
+              bind:value={newBreak} 
+              class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
+            />
+          </div>
+        {/if}
+
+        {#if newType === 'amrap'}
+          <div class="col-span-2 space-y-1.5">
+            <label for="preset-amrap" class="text-[10px] font-bold text-gray-600 uppercase tracking-wider ml-1">{$t('durationLabel')}</label>
+            <input 
+              id="preset-amrap"
+              type="number"
+              min="1"
+              value={Math.floor(newAmrapDuration / 60)} 
+              oninput={(e) => newAmrapDuration = Number(e.currentTarget.value) * 60}
+              class="w-full bg-[var(--text-color)]/[0.03] border border-[var(--text-color)]/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-[var(--text-color)]/30 transition-colors text-[var(--text-color)]"
+            />
+          </div>
+        {/if}
       </div>
       <button 
         onclick={savePreset}

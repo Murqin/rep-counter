@@ -60,7 +60,21 @@ export const translations = {
     // Languages
     language: 'Language',
     turkish: 'Turkish',
-    english: 'English'
+    english: 'English',
+    
+    // Workout Formats
+    workoutType: 'Workout Type',
+    classic: 'Classic (Reps)',
+    emom: 'EMOM (Every Minute on the Minute)',
+    tabata: 'Tabata (Interval)',
+    amrap: 'AMRAP (As Many Rounds As Possible)',
+    workDurationLabel: 'Work (s)',
+    intervalLabel: 'Interval (s)',
+    durationLabel: 'Duration (m)',
+    workTime: 'WORK',
+    roundsCompleted: 'Rounds Completed',
+    totalTime: 'TOTAL TIME',
+    timeLeft: 'Time Left'
   },
   tr: {
     // App Header / Settings
@@ -120,7 +134,21 @@ export const translations = {
     // Languages
     language: 'Dil',
     turkish: 'Türkçe',
-    english: 'İngilizce'
+    english: 'İngilizce',
+    
+    // Workout Formats
+    workoutType: 'Antrenman Türü',
+    classic: 'Klasik (Tekrar)',
+    emom: 'EMOM (Dakika Başı Tekrar)',
+    tabata: 'Tabata (Aralıklı)',
+    amrap: 'AMRAP (En Çok Tur)',
+    workDurationLabel: 'Çalışma (sn)',
+    intervalLabel: 'Aralık (sn)',
+    durationLabel: 'Süre (dk)',
+    workTime: 'ÇALIŞMA',
+    roundsCompleted: 'Tamamlanan Tur',
+    totalTime: 'TOPLAM SÜRE',
+    timeLeft: 'Kalan Süre'
   }
 };
 

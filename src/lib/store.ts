@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import type { SessionState, Preset, Settings } from './types';
 import { feedbackRep, feedbackSuccess } from './feedback';
 
@@ -22,25 +22,29 @@ export function sanitizeName(raw: string): string {
 function validateSession(data: unknown): SessionState {
   const defaults: SessionState = {
     activePresetId: null,
+    workoutType: 'classic',
     currentRound: 1,
     currentRep: 0,
     isResting: false,
     isTransitioning: false,
     totalRounds: 0,
     timeLeft: 0,
-    lastTick: null
+    lastTick: null,
+    amrapRoundsCompleted: 0
   };
   if (!data || typeof data !== 'object') return defaults;
   const d = data as Record<string, unknown>;
   return {
     activePresetId: typeof d.activePresetId === 'string' ? d.activePresetId : null,
+    workoutType:    d.workoutType === 'classic' || d.workoutType === 'emom' || d.workoutType === 'tabata' || d.workoutType === 'amrap' ? d.workoutType : 'classic',
     currentRound:   Number.isFinite(d.currentRound)  && (d.currentRound as number) >= 1  ? Math.floor(d.currentRound as number)  : 1,
     currentRep:     Number.isFinite(d.currentRep)    && (d.currentRep as number) >= 0    ? Math.floor(d.currentRep as number)    : 0,
     isResting:      typeof d.isResting === 'boolean'       ? d.isResting       : false,
     isTransitioning: false, // Always reset on load — prevents stuck transition state
     totalRounds:    Number.isFinite(d.totalRounds)   && (d.totalRounds as number) >= 0   ? Math.floor(d.totalRounds as number)   : 0,
     timeLeft:       Number.isFinite(d.timeLeft)      && (d.timeLeft as number) >= 0      ? Math.floor(d.timeLeft as number)      : 0,
-    lastTick:       null // Always reset lastTick on load to avoid phantom timer deltas
+    lastTick:       null, // Always reset lastTick on load to avoid phantom timer deltas
+    amrapRoundsCompleted: Number.isFinite(d.amrapRoundsCompleted) && (d.amrapRoundsCompleted as number) >= 0 ? Math.floor(d.amrapRoundsCompleted as number) : 0
   };
 }
 
@@ -78,9 +82,13 @@ function validatePresets(data: unknown): Preset[] {
     .map(p => ({
       id:           p.id as string,
       name:         sanitizeName(p.name as string), // Sanitize on read too
+      type:         p.type === 'classic' || p.type === 'emom' || p.type === 'tabata' || p.type === 'amrap' ? p.type : 'classic',
       rounds:       Math.min(Math.floor(p.rounds), 999),
       repsPerRound: Math.min(Math.floor(p.repsPerRound), 9999),
-      breakDuration: Math.min(Math.floor(p.breakDuration), 3600)
+      breakDuration: Math.min(Math.floor(p.breakDuration), 3600),
+      workDuration: p.workDuration !== undefined && Number.isFinite(p.workDuration) ? Math.min(Math.max(1, Math.floor(p.workDuration)), 3600) : 20,
+      emomInterval: p.emomInterval !== undefined && Number.isFinite(p.emomInterval) ? Math.min(Math.max(1, Math.floor(p.emomInterval)), 3600) : 60,
+      amrapDuration: p.amrapDuration !== undefined && Number.isFinite(p.amrapDuration) ? Math.min(Math.max(1, Math.floor(p.amrapDuration)), 86400) : 600
     }));
 }
 
@@ -115,8 +123,8 @@ export const sessionStore = persistentWritable<SessionState>('rep-session',
   validateSession(
     (() => { try { return JSON.parse(typeof localStorage !== 'undefined' ? localStorage.getItem('rep-session') ?? 'null' : 'null'); } catch { return null; } })()
   ) ?? {
-    activePresetId: null, currentRound: 1, currentRep: 0,
-    isResting: false, isTransitioning: false, totalRounds: 0, timeLeft: 0, lastTick: null
+    activePresetId: null, workoutType: 'classic', currentRound: 1, currentRep: 0,
+    isResting: false, isTransitioning: false, totalRounds: 0, timeLeft: 0, lastTick: null, amrapRoundsCompleted: 0
   }
 );
 
@@ -137,14 +145,106 @@ export const presetsStore = persistentWritable<Preset[]>('rep-presets',
 
 export const wakeLockActive = writable(false);
 
+export function handleTimerExpiry(s: SessionState): SessionState {
+  const type = s.workoutType || 'classic';
+  feedbackSuccess();
+
+  const presets = get(presetsStore);
+  const activePreset = presets.find(p => p.id === s.activePresetId);
+
+  if (type === 'classic') {
+    return {
+      ...s,
+      isResting: false,
+      isTransitioning: false,
+      timeLeft: 0,
+      lastTick: null
+    };
+  }
+
+  if (type === 'emom') {
+    if (s.currentRound < s.totalRounds) {
+      const interval = activePreset?.emomInterval ?? 60;
+      return {
+        ...s,
+        currentRound: s.currentRound + 1,
+        currentRep: 0,
+        isResting: false,
+        isTransitioning: false,
+        timeLeft: interval,
+        lastTick: Date.now()
+      };
+    } else {
+      return {
+        ...s,
+        currentRound: s.currentRound + 1,
+        isResting: false,
+        isTransitioning: false,
+        timeLeft: 0,
+        lastTick: null
+      };
+    }
+  }
+
+  if (type === 'tabata') {
+    if (!s.isResting) {
+      const restSec = activePreset?.breakDuration ?? 10;
+      return {
+        ...s,
+        isResting: true,
+        timeLeft: restSec,
+        lastTick: Date.now()
+      };
+    } else {
+      if (s.currentRound < s.totalRounds) {
+        const workSec = activePreset?.workDuration ?? 20;
+        return {
+          ...s,
+          currentRound: s.currentRound + 1,
+          currentRep: 0,
+          isResting: false,
+          timeLeft: workSec,
+          lastTick: Date.now()
+        };
+      } else {
+        return {
+          ...s,
+          currentRound: s.currentRound + 1,
+          isResting: false,
+          timeLeft: 0,
+          lastTick: null
+        };
+      }
+    }
+  }
+
+  if (type === 'amrap') {
+    return {
+      ...s,
+      currentRound: s.totalRounds + 1,
+      timeLeft: 0,
+      lastTick: null
+    };
+  }
+
+  return s;
+}
+
 export function updateTimer() {
   sessionStore.update(s => {
-    if (!s.isResting || s.timeLeft <= 0) return s;
+    if ((s.workoutType === 'classic' || !s.workoutType) && !s.isResting) return s;
+    if (s.timeLeft <= 0) return s;
+
     const now = Date.now();
     const elapsed = s.lastTick ? Math.floor((now - s.lastTick) / 1000) : 0;
     if (elapsed >= 1) {
       const nextTime = Math.max(0, s.timeLeft - elapsed);
-      return { ...s, timeLeft: nextTime, lastTick: now };
+      let updated: SessionState = { ...s, timeLeft: nextTime, lastTick: now };
+      
+      if (nextTime === 0) {
+        updated = handleTimerExpiry(updated);
+      }
+      return updated;
     }
     return s;
   });
@@ -152,37 +252,61 @@ export function updateTimer() {
 
 export function incrementRep(targetReps: number, autoAdvance: boolean, breakDuration: number) {
   sessionStore.update(s => {
-    if (s.isResting || s.isTransitioning) return s;
+    const type = s.workoutType || 'classic';
+    if (s.isTransitioning) return s;
+    
+    if (type === 'tabata' && s.isResting) return s;
+    if (type === 'classic' && s.isResting) return s;
+    if (type === 'emom' && s.isResting) return s;
+
     let nextRep = s.currentRep + 1;
     let nextRound = s.currentRound;
-    let isResting: boolean = s.isResting;
-    let isTransitioning: boolean = false;
+    let isResting = s.isResting;
+    let isTransitioning = false;
     let timeLeft = s.timeLeft;
     let lastTick = s.lastTick;
+    let amrapRoundsCompleted = s.amrapRoundsCompleted ?? 0;
 
-    if (nextRep >= targetReps && autoAdvance) {
-      feedbackSuccess();
-      if (nextRound < s.totalRounds) {
-        if (breakDuration > 0) {
-          nextRep = 0;
-          nextRound++;
-          isResting = true;
-          timeLeft = breakDuration;
-          lastTick = Date.now();
+    if (type === 'amrap') {
+      if (nextRep >= targetReps) {
+        feedbackSuccess();
+        amrapRoundsCompleted++;
+        nextRound++;
+        nextRep = 0;
+      } else {
+        feedbackRep();
+      }
+    } else if (type === 'emom') {
+      if (nextRep >= targetReps) {
+        feedbackSuccess();
+        isResting = true;
+      } else {
+        feedbackRep();
+      }
+    } else if (type === 'tabata') {
+      feedbackRep();
+    } else {
+      if (nextRep >= targetReps && autoAdvance) {
+        feedbackSuccess();
+        if (nextRound < s.totalRounds) {
+          if (breakDuration > 0) {
+            nextRep = 0;
+            nextRound++;
+            isResting = true;
+            timeLeft = breakDuration;
+            lastTick = Date.now();
+          } else {
+            isTransitioning = true;
+          }
         } else {
-          // 0s Rest: Set transitioning to true to pause visually
-          isTransitioning = true;
-          // We'll reset this after a timeout in the component or a helper
+          nextRound++;
         }
       } else {
-        // Last round complete
-        nextRound++;
+        feedbackRep();
       }
-    } else {
-      feedbackRep();
     }
     
-    return { ...s, currentRep: nextRep, currentRound: nextRound, isResting, isTransitioning, timeLeft, lastTick };
+    return { ...s, currentRep: nextRep, currentRound: nextRound, isResting, isTransitioning, timeLeft, lastTick, amrapRoundsCompleted };
   });
 }
 
@@ -215,20 +339,127 @@ export function manualAdvance(breakDuration: number) {
 
 export function endRest() {
   feedbackSuccess();
-  sessionStore.update(s => ({ ...s, isResting: false, isTransitioning: false, timeLeft: 0, lastTick: null }));
+  sessionStore.update(s => {
+    const type = s.workoutType || 'classic';
+    if (type === 'emom') {
+      const presets = get(presetsStore);
+      const activePreset = presets.find(p => p.id === s.activePresetId);
+      const interval = activePreset?.emomInterval ?? 60;
+      if (s.currentRound < s.totalRounds) {
+        return {
+          ...s,
+          currentRound: s.currentRound + 1,
+          currentRep: 0,
+          isResting: false,
+          timeLeft: interval,
+          lastTick: Date.now()
+        };
+      } else {
+        return {
+          ...s,
+          currentRound: s.currentRound + 1,
+          isResting: false,
+          timeLeft: 0,
+          lastTick: null
+        };
+      }
+    }
+    if (type === 'tabata') {
+      const presets = get(presetsStore);
+      const activePreset = presets.find(p => p.id === s.activePresetId);
+      const workSec = activePreset?.workDuration ?? 20;
+      if (s.currentRound < s.totalRounds) {
+        return {
+          ...s,
+          currentRound: s.currentRound + 1,
+          currentRep: 0,
+          isResting: false,
+          timeLeft: workSec,
+          lastTick: Date.now()
+        };
+      } else {
+        return {
+          ...s,
+          currentRound: s.currentRound + 1,
+          isResting: false,
+          timeLeft: 0,
+          lastTick: null
+        };
+      }
+    }
+    return { ...s, isResting: false, isTransitioning: false, timeLeft: 0, lastTick: null };
+  });
 }
 
 export function completeSet(targetReps: number, autoAdvance: boolean, breakDuration: number) {
   sessionStore.update(s => {
-    if (s.isResting || s.isTransitioning) return s;
-    
-    let nextRound = s.currentRound;
-    let isResting: boolean = s.isResting;
-    let isTransitioning: boolean = false;
-    let timeLeft = s.timeLeft;
-    let lastTick = s.lastTick;
+    const type = s.workoutType || 'classic';
+    if (s.isTransitioning) return s;
+    if (s.isResting && type !== 'tabata') return s;
 
     feedbackSuccess();
+
+    let nextRound = s.currentRound;
+    let isResting = s.isResting;
+    let isTransitioning = false;
+    let timeLeft = s.timeLeft;
+    let lastTick = s.lastTick;
+    let amrapRoundsCompleted = s.amrapRoundsCompleted ?? 0;
+
+    if (type === 'amrap') {
+      amrapRoundsCompleted++;
+      nextRound++;
+      return {
+        ...s,
+        currentRep: 0,
+        currentRound: nextRound,
+        amrapRoundsCompleted
+      };
+    }
+
+    if (type === 'emom') {
+      return {
+        ...s,
+        currentRep: targetReps,
+        isResting: true
+      };
+    }
+
+    if (type === 'tabata') {
+      if (!s.isResting) {
+        const presets = get(presetsStore);
+        const activePreset = presets.find(p => p.id === s.activePresetId);
+        const restSec = activePreset?.breakDuration ?? 10;
+        return {
+          ...s,
+          isResting: true,
+          timeLeft: restSec,
+          lastTick: Date.now()
+        };
+      } else {
+        if (s.currentRound < s.totalRounds) {
+          const presets = get(presetsStore);
+          const activePreset = presets.find(p => p.id === s.activePresetId);
+          const workSec = activePreset?.workDuration ?? 20;
+          return {
+            ...s,
+            currentRound: s.currentRound + 1,
+            currentRep: 0,
+            isResting: false,
+            timeLeft: workSec,
+            lastTick: Date.now()
+          };
+        } else {
+          return {
+            ...s,
+            currentRound: s.currentRound + 1,
+            isResting: false,
+            timeLeft: 0,
+            lastTick: null
+          };
+        }
+      }
+    }
 
     if (autoAdvance) {
       if (nextRound < s.totalRounds) {
