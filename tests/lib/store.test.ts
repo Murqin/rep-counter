@@ -125,6 +125,14 @@ describe('Store Logic - Classic', () => {
     expect(get(sessionStore).timeLeft).toBe(30);
   });
 
+  it('manualAdvance on final round transitions to success without resting', () => {
+    sessionStore.set({ activePresetId: '1', workoutType: 'classic', currentRound: 3, currentRep: 10, isResting: false, isTransitioning: false, totalRounds: 3, timeLeft: 0, lastTick: null });
+    manualAdvance(30);
+    const state = get(sessionStore);
+    expect(state.isResting).toBe(false);
+    expect(state.isTransitioning).toBe(true);
+  });
+
   it('completeSet advances to next round and starts resting when autoAdvance is true', () => {
     sessionStore.set({ activePresetId: '1', workoutType: 'classic', currentRound: 1, currentRep: 0, isResting: false, isTransitioning: false, totalRounds: 5, timeLeft: 0, lastTick: null });
     completeSet(10, true, 30);

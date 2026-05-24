@@ -365,6 +365,9 @@ export function advanceRound() {
 export function manualAdvance(breakDuration: number) {
   feedbackSuccess();
   sessionStore.update(s => {
+    if (s.currentRound >= s.totalRounds) {
+      return { ...s, isTransitioning: true };
+    }
     const shouldRest = breakDuration > 0;
     if (!shouldRest) {
       return { ...s, isTransitioning: true };
