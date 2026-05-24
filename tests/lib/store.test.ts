@@ -227,6 +227,48 @@ describe('Store Logic - EMOM', () => {
     expect(nextState.timeLeft).toBe(0);
     expect(nextState.lastTick).toBeNull();
   });
+
+  it('incrementRep to target on final round triggers isTransitioning = true and not resting', () => {
+    sessionStore.set({
+      activePresetId: 'emom-1',
+      workoutType: 'emom',
+      currentRound: 3,
+      currentRep: 7,
+      isResting: false,
+      isTransitioning: false,
+      totalRounds: 3,
+      timeLeft: 42,
+      lastTick: Date.now(),
+      amrapRoundsCompleted: 0
+    });
+
+    incrementRep(8, true, 0);
+    const state = get(sessionStore);
+    expect(state.isResting).toBe(false);
+    expect(state.isTransitioning).toBe(true);
+    expect(state.currentRep).toBe(8);
+  });
+
+  it('completeSet to target on final round triggers isTransitioning = true and not resting', () => {
+    sessionStore.set({
+      activePresetId: 'emom-1',
+      workoutType: 'emom',
+      currentRound: 3,
+      currentRep: 2,
+      isResting: false,
+      isTransitioning: false,
+      totalRounds: 3,
+      timeLeft: 42,
+      lastTick: Date.now(),
+      amrapRoundsCompleted: 0
+    });
+
+    completeSet(8, true, 0);
+    const state = get(sessionStore);
+    expect(state.isResting).toBe(false);
+    expect(state.isTransitioning).toBe(true);
+    expect(state.currentRep).toBe(8);
+  });
 });
 
 describe('Store Logic - Tabata', () => {

@@ -54,20 +54,16 @@
         {minutes}:{seconds}
       </div>
       
-      <div class="text-xs text-gray-500 tracking-wider font-semibold my-2">
-        {$t('reps')}: <span class="text-[var(--text-color)] text-xl font-black tabular-nums">{$sessionStore.currentRep}</span>
-      </div>
-
-      <div class="text-[10px] xs:text-xs text-gray-400 uppercase tracking-[0.2em] font-bold mt-1">
+      <!-- Round indicator -->
+      <div class="text-[11px] xs:text-xs text-gray-500 uppercase tracking-[0.25em] font-bold mt-2">
         {$t('round')} {$sessionStore.currentRound} / {$sessionStore.totalRounds}
       </div>
 
-      <button 
-        class="mt-6 text-[8px] xs:text-[10px] font-bold tracking-[0.2em] text-orange-500/60 hover:text-orange-400 transition-all border border-orange-500/20 bg-orange-500/5 px-4 xs:px-6 py-2 rounded-full active:scale-95 z-10"
-        onclick={(e) => { e.stopPropagation(); completeSet(targetReps, $settingsStore.autoAdvance, restDuration); }}
-      >
-        {$t('finishRound')}
-      </button>
+      <!-- Streamlined micro-badge for reps -->
+      <div class="mt-4 px-3 py-0.5 rounded-full border border-orange-500/20 bg-orange-500/5 text-[9px] xs:text-[10px] text-orange-300 font-bold uppercase tracking-widest flex items-center gap-1.5">
+        <span>{$t('reps')}:</span>
+        <span class="text-white font-black tabular-nums">{$sessionStore.currentRep}</span>
+      </div>
     {:else}
       <!-- Tabata Rest State -->
       <div class="text-xs sm:text-sm font-extrabold tracking-[0.25em] text-emerald-500 uppercase mb-2">

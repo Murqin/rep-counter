@@ -293,15 +293,20 @@ export function incrementEmomRep(targetReps: number) {
 
     let nextRep = s.currentRep + 1;
     let isResting: boolean = s.isResting;
+    let isTransitioning: boolean = s.isTransitioning;
 
     if (nextRep >= targetReps) {
       feedbackSuccess();
-      isResting = true;
+      if (s.currentRound < s.totalRounds) {
+        isResting = true;
+      } else {
+        isTransitioning = true;
+      }
     } else {
       feedbackRep();
     }
 
-    return { ...s, currentRep: nextRep, isResting };
+    return { ...s, currentRep: nextRep, isResting, isTransitioning };
   });
 }
 
@@ -496,10 +501,20 @@ export function completeEmomSet(targetReps: number) {
 
     feedbackSuccess();
 
+    let isResting: boolean = s.isResting;
+    let isTransitioning: boolean = s.isTransitioning;
+
+    if (s.currentRound < s.totalRounds) {
+      isResting = true;
+    } else {
+      isTransitioning = true;
+    }
+
     return {
       ...s,
       currentRep: targetReps,
-      isResting: true
+      isResting,
+      isTransitioning
     };
   });
 }
