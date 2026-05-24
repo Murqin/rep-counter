@@ -185,6 +185,16 @@ export function handleTabataTimerExpiry(s: SessionState): SessionState {
   const presets = get(presetsStore);
   const activePreset = presets.find(p => p.id === s.activePresetId);
   if (!s.isResting) {
+    if (s.currentRound >= s.totalRounds) {
+      return {
+        ...s,
+        currentRound: s.currentRound + 1,
+        isResting: false,
+        isTransitioning: false,
+        timeLeft: 0,
+        lastTick: null
+      };
+    }
     const restSec = activePreset?.breakDuration ?? 10;
     return {
       ...s,

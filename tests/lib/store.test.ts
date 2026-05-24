@@ -354,6 +354,27 @@ describe('Store Logic - Tabata', () => {
     expect(nextState.timeLeft).toBe(0);
     expect(nextState.lastTick).toBeNull();
   });
+
+  it('handleTimerExpiry from Work on last round terminates session immediately without resting', () => {
+    const finalWorkState = {
+      activePresetId: 'tabata-1',
+      workoutType: 'tabata' as const,
+      currentRound: 4,
+      currentRep: 8,
+      isResting: false,
+      isTransitioning: false,
+      totalRounds: 4,
+      timeLeft: 0,
+      lastTick: null,
+      amrapRoundsCompleted: 0
+    };
+
+    const nextState = handleTimerExpiry(finalWorkState);
+    expect(nextState.currentRound).toBe(5); // Finishes session
+    expect(nextState.isResting).toBe(false); // Does NOT start resting
+    expect(nextState.timeLeft).toBe(0);
+    expect(nextState.lastTick).toBeNull();
+  });
 });
 
 describe('Store Logic - AMRAP', () => {
