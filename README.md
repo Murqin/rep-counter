@@ -4,53 +4,53 @@
 
 # Rep Counter ⚡
 
-A minimalist, AMOLED-first Rep Counter PWA designed for peak performance and zero distractions. Built with **Svelte 5** and **Tailwind CSS v4**.
+> **A minimalist, AMOLED-first Rep Counter PWA designed for peak training focus and zero distractions. Built using Svelte 5 and Tailwind CSS v4.**
 
 <p align="center">
   <a href="https://svelte.dev">
-    <img src="https://img.shields.io/badge/Svelte-5-ff3e00?style=for-the-badge&logo=svelte&logoColor=white" alt="Svelte 5" />
+    <img src="https://img.shields.io/badge/Svelte-5-ff3e00?style=for-the-badge&logo=svelte&logoColor=white" alt="Svelte 5 badge" />
   </a>
   <a href="https://tailwindcss.com">
-    <img src="https://img.shields.io/badge/Tailwind_CSS-v4-06b6d4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-v4-06b6d4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4 badge" />
   </a>
   <a href="https://www.typescriptlang.org">
-    <img src="https://img.shields.io/badge/TypeScript-5.x-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/TypeScript-5.x-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript badge" />
   </a>
   <a href="https://rep-counter-sapphire.vercel.app/">
-    <img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel Deployed" />
+    <img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel Deployed status" />
   </a>
 </p>
 
-⚡ **[Live Demo](https://rep-counter-sapphire.vercel.app/)**
+⚡ **[Live Demo Portal](https://rep-counter-sapphire.vercel.app/)**
 
 ---
 
 ## 📱 Screenshots
 
 <p align="center">
-  <img src="public/screenshots/1.png" width="190" alt="Counter Screen" />
-  <img src="public/screenshots/2.png" width="190" alt="Rest Timer" />
-  <img src="public/screenshots/3.png" width="190" alt="Success Screen" />
-  <img src="public/screenshots/4.png" width="190" alt="Settings & Presets" />
+  <img src="public/screenshots/1.png" width="190" alt="Counter Screen Portrait" style="border-radius: 8px; border: 1px solid #2e2e2e; margin: 5px;" />
+  <img src="public/screenshots/2.png" width="190" alt="Rest Timer Portrait" style="border-radius: 8px; border: 1px solid #2e2e2e; margin: 5px;" />
+  <img src="public/screenshots/3.png" width="190" alt="Success Screen Portrait" style="border-radius: 8px; border: 1px solid #2e2e2e; margin: 5px;" />
+  <img src="public/screenshots/4.png" width="190" alt="Settings & Presets Portrait" style="border-radius: 8px; border: 1px solid #2e2e2e; margin: 5px;" />
 </p>
 
 ---
 
 ## ✨ Features
 
-- **AMOLED-First Design:** Pure black background (`#000000`) to save battery life on modern OLED screens while looking incredibly sleek.
-- **Smart Persistence:** Never lose your workout. The timer and session state survive page refreshes and accidental browser closes by calculating delta timestamps (`lastTick`).
-- **PWA Ready (Rich Install UI):** Installs as a standalone application on mobile and desktop. Includes high-quality app screenshots and description in the installation prompt.
-- **Custom Routines:** Easily create, edit, and delete custom workout routines.
-- **Seamless Flow:** 0-second rest support for high-intensity training with a 600ms transition pause to keep the visual pacing natural.
-- **Haptic & Sound Feedback:** Short haptic taps for reps and rich audio feedback for completed sets. Fully toggleable in settings.
-- **Privacy Focused:** No trackers, no ads, no cloud database. Everything is securely stored in your browser's local storage.
+- **🖤 AMOLED-First Layout:** Pure pitch-black background (`#000000`) designed to minimize battery drain on modern mobile OLED/AMOLED screens.
+- **💾 Smart State Persistence:** Never lose active workout states. Session metrics and timers survive browser refreshes or closures by calculating precise delta timestamps (`lastTick`).
+- **📱 PWA Ready (Rich Installation UI):** Installs as a native standalone application on iOS, Android, and Desktop. Includes app screenshots and descriptions inside the native prompt.
+- **⚙️ Custom Workout Presets:** Instantly configure, save, edit, and delete custom exercise routine templates.
+- **🔄 Zero-Second Rest Support:** Designed for high-intensity interval training (HIIT), featuring a fluid 600ms transition pause to keep UI pacing visual and natural.
+- **🔊 Haptic & Audio Feedback:** Physical vibration feedback for registered reps and high-frequency sound alerts for set completions (fully toggleable).
+- **🔒 Privacy Guaranteed:** Zero ads, zero background tracking, and no database synchronization. All session data resides exclusively inside your local browser storage.
 
 ---
 
-## 🏗 Architecture
+## 🏗️ State Architecture
 
-The app uses Svelte 5 Runes combined with persistent writable stores to maintain an offline-first state structure:
+This PWA utilizes **Svelte 5 Runes** combined with persistent writable stores to maintain an offline-first state structure:
 
 ```mermaid
 graph TD
@@ -71,99 +71,86 @@ graph TD
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Technology Stack
 
-- **Framework:** Svelte 5 (utilizing Svelte runes: `$state`, `$derived`, `$effect`)
-- **Styling:** Tailwind CSS v4 + Vanilla CSS Custom Variables for flexible theming
-- **PWA Engine:** `vite-plugin-pwa` with custom Workbox caching strategy
-- **Build Tool:** Vite
-- **Testing Suite:** Vitest + Testing Library + JSDom
+- **Framework Core:** Svelte 5 (leveraging Svelte runes: `$state`, `$derived`, `$effect`)
+- **Styling Engine:** Tailwind CSS v4 + native CSS Custom Variables for flexible dark theming
+- **PWA Service Worker:** `vite-plugin-pwa` utilizing an offline-first Workbox caching strategy
+- **Bundler:** Vite
+- **Testing Engine:** Vitest + Testing Library + JSDom
 
 ---
 
 ## 📲 PWA Installation Guide
 
-### Mobile (Android & iOS)
-- **Brave / Chrome (Android):** Open the site, tap the **"Install"** button. The browser will present a rich app store-like overlay with screenshots. Tap "Install" to add it to your launcher.
+### Mobile Environments (Android & iOS)
+- **Brave / Chrome (Android):** Open the live link and tap the floating **"Install"** button. The browser will present a rich, card-style install prompt.
 - **Firefox (Android):** Open the site, tap the `⋮` menu, and select **"Install"**.
 - **Safari (iOS):** Open the site, tap the **Share** button, and select **"Add to Home Screen"**.
-- *Note:* If you click add but the icon doesn't appear on Android, make sure the browser has the `"Add home screen shortcuts"` system permission enabled under your phone's App Info settings.
+*(Note: If shortcuts fail to appear on Android, verify that your browser has the `Add home screen shortcuts` system permission enabled inside App Settings).*
 
-### Desktop (Windows, macOS, Linux)
-- Open the site in any Chromium-based browser (Brave, Chrome, Edge), click the **Install icon** in the right-side of the address bar, and confirm the installation.
+### Desktop Environments
+- Open the application portal inside any modern Chromium browser (Brave, Chrome, Edge), click the **Install icon** situated on the right side of the address bar, and confirm the installation prompt.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Local Development
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- npm or pnpm / yarn
+- [Node.js](https://nodejs.org/) (Version 18 or higher)
+- **Package Manager:** `npm` / `pnpm` / `yarn`
 
-### Installation
+### Setup Steps
 1. Clone the repository:
    ```bash
    git clone https://github.com/Murqin/rep-counter.git
    cd rep-counter
    ```
-
-2. Install dependencies:
+2. Install dependency registry:
    ```bash
    npm install
    ```
-
-3. Start development server:
+3. Boot the local development server:
    ```bash
    npm run dev
    ```
-
-4. Build production bundle:
+4. Compile production bundles:
    ```bash
    npm run build
    ```
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing Registry
 
-The project is protected by a solid unit and integration testing suite located in the `/tests` folder.
+Rep Counter is verified via comprehensive unit and integration testing pipelines situated inside `/tests`:
 
-To run the Vitest suite:
+Run the test suite:
 ```bash
 npm test
 ```
 
-To perform a Svelte type check:
+Execute Svelte static type checking:
 ```bash
 npm run check
 ```
 
 ---
 
-## ❤️ Support the Project
+## ❤️ Support the Developer
 
-If you find this tool helpful, consider supporting its development:
+If you find this PWA useful, consider supporting its open-source maintenance:
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/murqin)
 
 ---
 
-## 🔮 Future Roadmap
+## 🔮 Roadmap
 
-To keep this PWA robust, lightweight, and modern, the following features are planned for future releases:
-
-1. **Workout History & Analytics:**
-   - Persistent tracking of completed exercise sessions.
-   - Elegant interactive progress charts, calendar heatmaps, and personal records tracking.
-
-2. **Secure Data Backup & Sync:**
-   - JSON format export/import of all custom presets, session history, and application settings to keep your data safe offline.
-
-3. **Alternative Timer Formats:**
-   - Support for EMOM (Every Minute on the Minute), Tabata, and AMRAP (As Many Rounds As Possible) training protocols.
-
-4. **Customizable Voice Guide & Sounds:**
-   - Multiple professional vocal cues and guide tones for rep milestones and transitions, fully toggleable in preferences.
+- **Workout History & Charts:** Persistent calendar tracking, heatmaps, personal records, and statistical trends.
+- **Data Export & Import:** Export custom presets and history to lightweight JSON files to backup data offline.
+- **Alternative Timer Protocols:** Support for EMOM (Every Minute on the Minute), Tabata, and AMRAP (As Many Rounds As Possible) routines.
+- **Synthesized Vocal Guide:** High-quality synthesized speech guidance detailing reps and rest milestones.
 
 ---
 
